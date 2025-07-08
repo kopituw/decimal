@@ -2,12 +2,12 @@
 #include <stdio.h>
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst){
-	if (dst == NULL) {
+	if (!dst) {
 		return CONVERTING_ERROR;
 	}else{
 		null_decimal(dst);
 	if (src < 0) {
-		dst->bit[3] = 1 << 31;
+		dst->bit[3] = 1 << 31; // потом мпоменять на сетсайн
 		src = -src;
 	}
 	dst->bit[0] |= (uint32_t)src;
