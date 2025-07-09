@@ -145,15 +145,44 @@ START_TEST(test_add_different_scales) {
 }
 END_TEST
 
+START_TEST(test_add_different_scales_2) {
+    s21_decimal a = INIT_DECIMAL_SCALE(999999, 3); // 999.999
+    s21_decimal b = INIT_DECIMAL_SCALE(1, 3); // 0.001
+    s21_decimal result;
+
+    s21_add(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL_SCALE(1000, 3));
+}
+END_TEST
+
+START_TEST(test_add_remove_zeros) {
+    s21_decimal a = INIT_DECIMAL_SCALE(200000, 3); // 200.000
+    s21_decimal b = INIT_DECIMAL_SCALE(300000, 3); // 300.000
+    s21_decimal result;
+
+    s21_add(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(500));
+}
+END_TEST
+
 START_TEST(test_add_different_scales_negative) {
     s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
     s21_decimal b = INIT_DECIMAL_SCALE(275, 2); // 2.75
     s21_decimal result;
 
-    int status s21_add(a, b, &result);
-    ck_assert_int_eq(status, )
+    int status = s21_add(a, b, &result);
+    ck_assert_int_eq(status, CONVERSION_ERROR);
 }
+END_TEST
 
-// с разными экспонентами -1.5(скейл = 1) + 2.5(скейл = 2)
-// проверка на удаление нулей в дробной части 200.00 + 300.00 = 500
-// тест на возврат кода ошибки нулевой результат и скейл больше 29
+START_TEST(test_add_scale_overflow) {
+    s21_decimal a = INIT_DECIMAL_SCALE(15, 29);
+    s21_decimal b = INIT_DECIMAL_SCALE(275, 2); // 2.75
+    s21_decimal result;
+
+    int status = s21_add(a, b, &result);
+    ck_assert_int_eq(status, CONVERSION_ERROR);
+}
+END_TEST
+
+
