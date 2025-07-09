@@ -38,6 +38,8 @@ typedef struct
 // TESTS
 int test_s21_add(int *total_tests_count);
 int test_s21_sub(int *total_tests_count);
+int test_s21_div(int *total_tests_count);
+int test_s21_mul(int *total_tests_count);
 
 // арифметика
 

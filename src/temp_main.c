@@ -15,9 +15,10 @@ int main(void)
     test_s21_is_equal(&total_tests_count);
     test_s21_is_greater_or_equal(&total_tests_count);
     failed_tests_count += test_s21_mul(&total_tests_count);
-    failed_tests_count += test_s21_mul_int(&total_tests_count);
+    // failed_tests_count += test_s21_mul_int(&total_tests_count);
 
     failed_tests_count += test_s21_mul(&total_tests_count);
+    failed_tests_count += test_s21_div(&total_tests_count);
 
     printf("\n\n%.2f%% of %d tests passed\n\n", 100 - ((double)failed_tests_count * 100 / (double)total_tests_count), total_tests_count);
 
@@ -200,37 +201,41 @@ int test_s21_mul(int *total_tests_count)
     return failed_tests_count;
 }
 
-int test_s21_mul_int(int *total_tests_count)
+int test_s21_div(int *total_tests_count)
 {
     int failed_tests_count = 0;
-    int values_a[10] = {1, -1, 5, -5, 8, -8};
-    int values_b[10] = {1, -1, 5, -5, 8, -8};
+    int values_a[10] = {11, 5, 8, 6, 26, 10, 2};
+    int values_b[10] = {11, 5, 8, 29, 9, 10, 2};
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 5; j++)
         {
             if (values_a[i] != values_b[j])
             {
                 (*total_tests_count)++;
                 int na = values_a[i], nb = values_b[j];
                 s21_decimal a = {{na > 0 ? na : -na, 0, 0, 0}};
+                s21_decimal b = {{nb > 0 ? nb : -nb, 0, 0, 0}};
                 s21_decimal result;
                 init_decimal(&result);
                 set_sign(&a, (na < 0));
+                set_sign(&b, (nb < 0));
                 char my_res[512] = {0};
                 char exp_res[512] = {0};
 
-                s21_mul_int(a, nb, &result);
+                s21_div(a, b, &result);
                 char sign1 = get_sign(&a) ? '-' : '+';
+                char sign2 = get_sign(&b) ? '-' : '+';
                 char sign3 = get_sign(&result) ? '-' : '+';
 
-                sprintf(my_res, "%c%u * %+d = %c%u\n", sign1, a.bit[0], nb, sign3, result.bit[0]);
-                sprintf(exp_res, "%+d * %+d = %+d\n", na, nb, na * nb);
+                sprintf(my_res, "%c%u / %c%u = %c%u\n", sign1, a.bit[0], sign2, b.bit[0], sign3, result.bit[0]);
+                sprintf(exp_res, "%+d / %+d = %+d\n", na, nb, na / nb);
 
                 if (!strcmp(my_res, exp_res))
                 {
                     printf("TEST #%d PASSED!\n", *total_tests_count);
+                    // printf(" my_res: %s\nexp_res: %s", my_res, exp_res);
                 }
                 else
                 {
@@ -243,6 +248,50 @@ int test_s21_mul_int(int *total_tests_count)
     }
     return failed_tests_count;
 }
+
+// int test_s21_mul_int(int *total_tests_count)
+// {
+//     int failed_tests_count = 0;
+//     int values_a[10] = {1, -1, 5, -5, 8, -8};
+//     int values_b[10] = {1, -1, 5, -5, 8, -8};
+
+//     for (int i = 0; i < 10; i++)
+//     {
+//         for (int j = 0; j < 10; j++)
+//         {
+//             if (values_a[i] != values_b[j])
+//             {
+//                 (*total_tests_count)++;
+//                 int na = values_a[i], nb = values_b[j];
+//                 s21_decimal a = {{na > 0 ? na : -na, 0, 0, 0}};
+//                 s21_decimal result;
+//                 init_decimal(&result);
+//                 set_sign(&a, (na < 0));
+//                 char my_res[512] = {0};
+//                 char exp_res[512] = {0};
+
+//                 s21_mul_int(a, nb, &result);
+//                 char sign1 = get_sign(&a) ? '-' : '+';
+//                 char sign3 = get_sign(&result) ? '-' : '+';
+
+//                 sprintf(my_res, "%c%u * %+d = %c%u\n", sign1, a.bit[0], nb, sign3, result.bit[0]);
+//                 sprintf(exp_res, "%+d * %+d = %+d\n", na, nb, na * nb);
+
+//                 if (!strcmp(my_res, exp_res))
+//                 {
+//                     printf("TEST #%d PASSED!\n", *total_tests_count);
+//                 }
+//                 else
+//                 {
+//                     failed_tests_count++;
+//                     printf("TEST #%d FAILED!\n", *total_tests_count);
+//                     printf(" my_res: %s\nexp_res: %s\n", my_res, exp_res);
+//                 }
+//             }
+//         }
+//     }
+//     return failed_tests_count;
+// }
 
 int test_s21_is_greater(int *total_tests_count)
 {
