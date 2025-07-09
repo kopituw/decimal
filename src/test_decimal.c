@@ -126,7 +126,7 @@ START_TEST(test_add_max_decimal) {
 END_TEST
 
 START_TEST(test_add_max_decimal_negative) {
-    s21_decimal max = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 1}};
+    s21_decimal max = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}};
     s21_decimal one = INIT_DECIMAL(-1);
     s21_decimal result;
 
@@ -185,4 +185,124 @@ START_TEST(test_add_scale_overflow) {
 }
 END_TEST
 
+// Тесты на вычитание
 
+START_TEST(test_sub_simple) {
+    s21_decimal a = INIT_DECIMAL(5);
+    s21_decimal b = INIT_DECIMAL(3);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(2));
+}
+END_TEST
+
+START_TEST(test_sub_simple_negative_positive) {
+    s21_decimal a = INIT_DECIMAL(-5);
+    s21_decimal b = INIT_DECIMAL(3);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(-8));
+}
+END_TEST
+
+START_TEST(test_sub_simple_negative) {
+    s21_decimal a = INIT_DECIMAL(-5);
+    s21_decimal b = INIT_DECIMAL(-3);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(-2));
+}
+END_TEST
+
+START_TEST(test_sub_simple_positive_negative) {
+    s21_decimal a = INIT_DECIMAL(5);
+    s21_decimal b = INIT_DECIMAL(-3);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(8));
+}
+END_TEST
+
+START_TEST(test_sub_simple_zero) {
+    s21_decimal a = INIT_DECIMAL(0);
+    s21_decimal b = INIT_DECIMAL(0);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(0));
+}
+END_TEST
+
+START_TEST(test_sub_result_zero) {
+    s21_decimal a = INIT_DECIMAL(5);
+    s21_decimal b = INIT_DECIMAL(5);
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(0));
+}
+END_TEST
+
+START_TEST(test_sub_max_decimal) {
+    s21_decimal max = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}};
+    s21_decimal one = INIT_DECIMAL(1);
+    s21_decimal result;
+
+    int status = s21_sub(max, one, &result);
+    ck_assert_int_eq(status, NEGATIVE_INF);
+}
+END_TEST
+
+START_TEST(test_sub_different_scales) {
+    s21_decimal a = INIT_DECIMAL_SCALE(15, 1); // 1.5
+    s21_decimal b = INIT_DECIMAL_SCALE(275, 2); // 2.75
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL_SCALE(125, 2));
+}
+END_TEST
+
+START_TEST(test_sub_different_scales_2) {
+    s21_decimal a = INIT_DECIMAL_SCALE(999999, 3); // 999.999
+    s21_decimal b = INIT_DECIMAL_SCALE(1, 3); // 0.001
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL_SCALE(999.998, 3));
+}
+END_TEST
+
+START_TEST(test_sub_remove_zeros) {
+    s21_decimal a = INIT_DECIMAL_SCALE(200000, 3); // 200.000
+    s21_decimal b = INIT_DECIMAL_SCALE(300000, 3); // 300.000
+    s21_decimal result;
+
+    s21_sub(a, b, &result);
+    ck_assert_int_eq(result, INIT_DECIMAL(-100));
+}
+END_TEST
+
+START_TEST(test_sub_different_scales_negative) {
+    s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
+    s21_decimal b = INIT_DECIMAL_SCALE(275, 2); // 2.75
+    s21_decimal result;
+
+    int status = s21_sub(a, b, &result);
+    ck_assert_int_eq(status, CONVERSION_ERROR);
+}
+END_TEST
+
+START_TEST(test_sub_scale_overflow) {
+    s21_decimal a = INIT_DECIMAL_SCALE(15, 29);
+    s21_decimal b = INIT_DECIMAL_SCALE(275, 2); // 2.75
+    s21_decimal result;
+
+    int status = s21_sub(a, b, &result);
+    ck_assert_int_eq(status, CONVERSION_ERROR);
+}
+END_TEST
