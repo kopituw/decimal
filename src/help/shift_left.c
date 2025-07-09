@@ -1,18 +1,39 @@
 #include "../s21_decimal.h"
 
-void shift_left(s21_big_decimal* decimal, int shift_value) {
-    int current_len = shift_value_len(*decimal);
-    int can_shift = (shift_value > 0) && (current_len + shift_value <= 256);
-    if(can_shift) {
-        for (int i = 255 - shift_value; i >= 0; i--) {
-            int bit = big_get_bit(*decimal, i);
-            big_set_bit(decimal, i + shift_value, bit);
-        }
-        for (int i = 0; i < shift_value; i++){
-            big_set_bit(decimal, i, 0);
-        }
+int shift_left(s21_decimal *dec)
+{
+    int overflow = get_bit(*dec, 95);
+    for (int i = 95; i >= 0; i--)
+    {
+        set_bit(dec, i, i ? get_bit(*dec, i - 1) : 0);
     }
+    return overflow;
 }
+
+int shift_left_offset(s21_decimal *dec, int offset)
+{
+    int overflow = get_bit(*dec, 95);
+    while (offset--)
+    {
+        shift_left(dec);
+    }
+
+    return overflow;
+}
+
+// void shift_left(s21_big_decimal* decimal, int shift_value) {
+//     int current_len = shift_value_len(*decimal);
+//     int can_shift = (shift_value > 0) && (current_len + shift_value <= 256);
+//     if(can_shift) {
+//         for (int i = 255 - shift_value; i >= 0; i--) {
+//             int bit = big_get_bit(*decimal, i);
+//             big_set_bit(decimal, i + shift_value, bit);
+//         }
+//         for (int i = 0; i < shift_value; i++){
+//             big_set_bit(decimal, i, 0);
+//         }
+//     }
+// }
 
 // int big_shift_left(s21_big_decimal *value, int offset) {
 //     int res = OK;

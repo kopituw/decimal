@@ -1,132 +1,163 @@
 #include "../s21_decimal.h"
 
-int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-    s21_decimal c_result = {0};
-    int ret = OK;
-    int scale = 0, scale_rem = 0, rem = 0;
-    int sign1 = get_sign(&value_1), sign2 = get_sign(&value_2), sign = 0;
-    int scale1 = get_scale(&value_1), scale2 = get_scale(&value_2);
-    s21_big_decimal big_value_1 = {0}, big_value_2 = {0}, big_result = {0}, result_rem = {0};
+int s21_div(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
+{
+    if (!result || is_zero(dec1) || is_zero(dec2))
+        return 0;
 
-    if (result == NULL || ((scale1 > 28 || scale < 0) || (scale2 > 28 || scale2 < 0)) || (correct_last_bits(value_1) != 1 || correct_last_bits(value_2) != 1)) {
-        ret = CONVERSION_ERROR;
-    } else if (is_zero(value_2)) {
-        ret = DIVISION_BY_ZERO;
-    } else {
-        s21_decimal c_value_1 = value_1;
+    if (s21_is_equal(dec1, dec2))
+    {
+        set_bit(result, 0, 1);
+    }
+    else if (s21_is_less(dec1, dec2))
+    {
+        set_bit(result, 0, 0);
+    }
+    else
+    {
+        init_decimal(result);
+        s21_decimal huy = dec2;
 
-        if (sign1 != sign2) {
-            sign = 1;
+        while (s21_is_less_or_equal(huy, dec1))
+        {
+            s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+            s21_mul(dec2, *result, &huy);
         }
 
-        null_decimal(result);
-        big_normalize(value_1, value_2, &big_value_1, &big_value_2, &scale);
-        rem = s21_big_div(big_value_1, big_value_2, &big_result);
-
-        if (rem) {
-            scale_rem = remains(big_result, big_value_1, big_value_2, &result, scale);
-        } 
-
-        scale = scale_rem;
-
-        for (int i = scale_rem; i > 0; i--) {
-            big_mul10(&big_result);
-        }
-
-        s21_big_add(big_result, result_rem, &big_result);
-        ret = big_to_decimal(big_result, &c_result, &scale);
-
-        if (ret == 1 && sign == 1) {
-            ret = NEGATIVE_INF;
-        }
-
-        if (is_zero(value_1)) {
-            ret = OK;
-        }
-
-        if (!is_zero(c_value_1) && is_zero(value_1) && is_zero(c_result)) {
-            ret = NEGATIVE_INF;
-        }
-
-        set_scale(&c_result, scale);
-        set_sign(&c_result, sign);
-
-        *result = c_result;
+        s21_sub(huy, dec2, &huy);
+        s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
     }
 
-    return ret;
+    return 1;
 }
 
-int s21_big_div(s21_big_decimal value_1, s21_big_decimal value_2, s21_big_decimal *result) {
-    big_null_decimal(result);
+// int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+//     s21_decimal c_result = {0};
+//     int ret = OK;
+//     int scale = 0, scale_rem = 0, rem = 0;
+//     int sign1 = get_sign(&value_1), sign2 = get_sign(&value_2), sign = 0;
+//     int scale1 = get_scale(&value_1), scale2 = get_scale(&value_2);
+//     s21_big_decimal big_value_1 = {0}, big_value_2 = {0}, big_result = {0}, result_rem = {0};
 
-    s21_big_decimal c_result = {0}, sub = value_1;
-    int bit_value_1 = 0, bit_value_2 = 0, rem = 0;
+//     if (result == NULL || ((scale1 > 28 || scale < 0) || (scale2 > 28 || scale2 < 0)) || (correct_last_bits(value_1) != 1 || correct_last_bits(value_2) != 1)) {
+//         ret = CONVERSION_ERROR;
+//     } else if (is_zero(value_2)) {
+//         ret = DIVISION_BY_ZERO;
+//     } else {
+//         s21_decimal c_value_1 = value_1;
 
-    for (int i = 0; i < 256; i++) {
-        if (big_get_bit(value_1, i) == 1) {
-            bit_value_1 = i;
-        }
-        if (big_get_bit(value_2, i) == 1) {
-            bit_value_2 = i;
-        }
-    }
-    
-    int i = bit_value_1 - bit_value_2;
-    int flag = 0;
+//         if (sign1 != sign2) {
+//             sign = 1;
+//         }
 
-    for (int y = i; y > 0; y--) {
-        big_shift_right(&sub, 1);
-    }
+//         null_decimal(result);
+//         big_normalize(value_1, value_2, &big_value_1, &big_value_2, &scale);
+//         rem = s21_big_div(big_value_1, big_value_2, &big_result);
 
-    while (i >= 0) {
-        // дописать
-        if (s21_big_is_greater(sub, value_2) || s21_big_is_equal(sub, value_2)) {
-            big_shift_left(&c_result, 1); // сдвигаем влево если саб больше или равно занчению
-            big_set_bit(&c_result, 0, 1); // устанавливаем в младший бит результат
-            s21_big_sub(sub, value_2, &sub); // дописать
-            flag = 1;
-        } else {
-            big_shift_left(&c_result, 1); // сдвигаем результат влево
-        }
-        big_shift_left(&sub, 1);
-        if (i >= 0) {
-            big_set_bit(&sub, 0, big_get_bit(value_1, i));
-        }
-        i--;
-    }
-    if (big_is_zero(value_1)) rem = 0;
-    else if (s21_big_is_greater(value_2, value_1)) rem = 1;
-    else if (!big_is_zero(sub)) rem = 1;
-    else if (sub.b_bit[0] == 5) rem = 5;
+//         if (rem) {
+//             scale_rem = remains(big_result, big_value_1, big_value_2, &result, scale);
+//         }
 
-    *result = c_result;
+//         scale = scale_rem;
 
-    return rem;
-}
+//         for (int i = scale_rem; i > 0; i--) {
+//             big_mul10(&big_result);
+//         }
 
-int remains(s21_big_decimal c_result, s21_big_decimal value_1, s21_big_decimal value_2, s21_big_decimal *result, int scale) {
-    s21_big_decimal src = {0}, c_res = {0};
-    int scale_rem = 0, rem = 1;
+//         s21_big_add(big_result, result_rem, &big_result);
+//         ret = big_to_decimal(big_result, &c_result, &scale);
 
-    while ((rem != 0) && (scale + scale_rem == 40)) {
-        s21_big_mul(c_result, value_2, &src);
-        s21_big_sub(value_1, src, &src);
-        big_mul10(&src);
-        value_1 = src;
-        rem = s21_big_div(src, value_2, &src);
+//         if (ret == 1 && sign == 1) {
+//             ret = NEGATIVE_INF;
+//         }
 
-        if (!big_is_zero(c_res)) {
-    big_mul10(&c_res);
-    s21_big_add(c_res, src, &c_res);
-    } else {
-    c_res = src;
-    }
+//         if (is_zero(value_1)) {
+//             ret = OK;
+//         }
 
-        c_result = src;
-        big_null_decimal(&src);
-        scale_rem++;
-    }
-    *result = c_res;
-    return scale_rem;
-}
+//         if (!is_zero(c_value_1) && is_zero(value_1) && is_zero(c_result)) {
+//             ret = NEGATIVE_INF;
+//         }
+
+//         set_scale(&c_result, scale);
+//         set_sign(&c_result, sign);
+
+//         *result = c_result;
+//     }
+
+//     return ret;
+// }
+
+// int s21_big_div(s21_big_decimal value_1, s21_big_decimal value_2, s21_big_decimal *result) {
+//     big_null_decimal(result);
+
+//     s21_big_decimal c_result = {0}, sub = value_1;
+//     int bit_value_1 = 0, bit_value_2 = 0, rem = 0;
+
+//     for (int i = 0; i < 256; i++) {
+//         if (big_get_bit(value_1, i) == 1) {
+//             bit_value_1 = i;
+//         }
+//         if (big_get_bit(value_2, i) == 1) {
+//             bit_value_2 = i;
+//         }
+//     }
+
+//     int i = bit_value_1 - bit_value_2;
+//     int flag = 0;
+
+//     for (int y = i; y > 0; y--) {
+//         big_shift_right(&sub, 1);
+//     }
+
+//     while (i >= 0) {
+//         // дописать
+//         if (s21_big_is_greater(sub, value_2) || s21_big_is_equal(sub, value_2)) {
+//             big_shift_left(&c_result, 1); // сдвигаем влево если саб больше или равно занчению
+//             big_set_bit(&c_result, 0, 1); // устанавливаем в младший бит результат
+//             s21_big_sub(sub, value_2, &sub); // дописать
+//             flag = 1;
+//         } else {
+//             big_shift_left(&c_result, 1); // сдвигаем результат влево
+//         }
+//         big_shift_left(&sub, 1);
+//         if (i >= 0) {
+//             big_set_bit(&sub, 0, big_get_bit(value_1, i));
+//         }
+//         i--;
+//     }
+//     if (big_is_zero(value_1)) rem = 0;
+//     else if (s21_big_is_greater(value_2, value_1)) rem = 1;
+//     else if (!big_is_zero(sub)) rem = 1;
+//     else if (sub.b_bit[0] == 5) rem = 5;
+
+//     *result = c_result;
+
+//     return rem;
+// }
+
+// int remains(s21_big_decimal c_result, s21_big_decimal value_1, s21_big_decimal value_2, s21_big_decimal *result, int scale) {
+//     s21_big_decimal src = {0}, c_res = {0};
+//     int scale_rem = 0, rem = 1;
+
+//     while ((rem != 0) && (scale + scale_rem == 40)) {
+//         s21_big_mul(c_result, value_2, &src);
+//         s21_big_sub(value_1, src, &src);
+//         big_mul10(&src);
+//         value_1 = src;
+//         rem = s21_big_div(src, value_2, &src);
+
+//         if (!big_is_zero(c_res)) {
+//     big_mul10(&c_res);
+//     s21_big_add(c_res, src, &c_res);
+//     } else {
+//     c_res = src;
+//     }
+
+//         c_result = src;
+//         big_null_decimal(&src);
+//         scale_rem++;
+//     }
+//     *result = c_res;
+//     return scale_rem;
+// }
