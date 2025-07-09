@@ -12,7 +12,7 @@
 
 // коды возвращаемых результатов
 enum returns { OK, INF, NEGATIVE_INF, DIVISION_BY_ZERO, CONVERSION_ERROR };
-enum converts { SUCCESS, CONVERTING_ERROR };
+enum converts { OK, CONVERTING_ERROR };
 
 typedef struct s21_decimal {
     uint32_t bit[4];
