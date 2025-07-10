@@ -81,7 +81,7 @@ START_TEST(test_bank_round_down) {
     s21_big_decimal expected = INIT_BIG_DECIMAL(1234);
 
     bank_round(&value, c_value, iter, flag);
-    ck_assert_int_eq(value, expected);
+    ck_assert_int_eq(s21_big_is_equal(value, expected), 1);
 }
 END_TEST
 
@@ -94,7 +94,7 @@ START_TEST(test_bank_round_up) {
     s21_big_decimal expected = INIT_BIG_DECIMAL(1235);
 
     bank_round(&value, c_value, iter, flag);
-    ck_assert_int_eq(value, expected);
+    ck_assert_int_eq(s21_big_is_equal(value, expected), 1);
 }
 END_TEST
 
@@ -107,7 +107,7 @@ START_TEST(test_bank_round_zero_down) {
     s21_big_decimal expected = INIT_BIG_DECIMAL(12345);
 
     bank_round(&value, c_value, iter, flag);
-    ck_assert_int_eq(value, expected);
+    ck_assert_int_eq(s21_big_is_equal(value, expected), 1);
 }
 END_TEST
 
@@ -120,7 +120,7 @@ START_TEST(test_bank_round_zero_up) {
     s21_big_decimal expected = INIT_BIG_DECIMAL(12346);
 
     bank_round(&value, c_value, iter, flag);
-    ck_assert_int_eq(value, expected);
+    ck_assert_int_eq(s21_big_is_equal(value, expected), 1);
 }
 END_TEST
 
@@ -133,10 +133,29 @@ START_TEST(test_bank_round_flag_set) {
     s21_big_decimal expected = INIT_BIG_DECIMAL(1235);
 
     bank_round(&value, c_value, iter, flag);
-    ck_assert_int_eq(value, expected);
+    ck_assert_int_eq(s21_big_is_equal(value, expected), 1);
 }
 END_TEST
 
-// Сюиты и запуск допишу + функцию сравнения
+Suite* bank_round_suite(void) {
+    Suite* s = suite_create("Bank Round");
+    TCase* tc = tcase_create("Core");
+    tcase_add_test(tc, test_bank_round_down);
+    tcase_add_test(tc, test_bank_round_up);
+    tcase_add_test(tc, test_bank_round_zero_down);
+    tcase_add_test(tc, test_bank_round_zero_up);
+    tcase_add_test(tc, test_bank_round_flag_set);
+    suite_add_tcase(s, tc);
+    return s;
+}
 
+int main(void) {
+    int number_failed;
+    Suite* s = bank_round_suite();
+    SRunner* sr = srunner_create(s);
+    srunner_run_all(sr, CK_VERBOSE);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+    return (number_failed == 0) ? 0 : 1;
+}
 
