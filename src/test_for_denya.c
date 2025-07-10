@@ -63,6 +63,80 @@ bool is_equal_big(s21_big_decimal a, s21_big_decimal b) {
     return true;
 }
 
+void print_big_decimal(s21_big_decimal dec) {
+    printf("Big decimal bits: ")
+    for (int i = 7; i >= 0; i--) {
+        printf("%08X", dec.b_bit[i]);
+    }
+    printf("\n");
 }
 
-START_TEST(tset_bank_round_1) {
+
+START_TEST(test_bank_round_down) {
+    s21_big_decimal value = INIT_BIG_DECIMAL(12344);
+    s21_big_decimal c_value = value;
+    unsigned iter = 1;
+    unsigned flag = 0;
+
+    s21_big_decimal expected = INIT_BIG_DECIMAL(1234);
+
+    bank_round(&value, c_value, iter, flag);
+    ck_assert_int_eq(value, expected);
+}
+END_TEST
+
+START_TEST(test_bank_round_up) {
+    s21_big_decimal value = INIT_BIG_DECIMAL(12346);
+    s21_big_decimal c_value = value;
+    unsigned iter = 1;
+    unsigned flag = 1;
+
+    s21_big_decimal expected = INIT_BIG_DECIMAL(1235);
+
+    bank_round(&value, c_value, iter, flag);
+    ck_assert_int_eq(value, expected);
+}
+END_TEST
+
+START_TEST(test_bank_round_zero_down) {
+    s21_big_decimal value = INIT_BIG_DECIMAL(123450);
+    s21_big_decimal c_value = value;
+    unsigned iter = 1;
+    unsigned flag = 0;
+
+    s21_big_decimal expected = INIT_BIG_DECIMAL(12345);
+
+    bank_round(&value, c_value, iter, flag);
+    ck_assert_int_eq(value, expected);
+}
+END_TEST
+
+START_TEST(test_bank_round_zero_up) {
+    s21_big_decimal value = INIT_BIG_DECIMAL(123455);
+    s21_big_decimal c_value = value;
+    unsigned iter = 1;
+    unsigned flag = 0;
+
+    s21_big_decimal expected = INIT_BIG_DECIMAL(12346);
+
+    bank_round(&value, c_value, iter, flag);
+    ck_assert_int_eq(value, expected);
+}
+END_TEST
+
+START_TEST(test_bank_round_flag_set) {
+    s21_big_decimal value = INIT_BIG_DECIMAL(12345);
+    s21_big_decimal c_value = value;
+    unsigned iter = 1;
+    unsigned flag = 1;
+
+    s21_big_decimal expected = INIT_BIG_DECIMAL(1235);
+
+    bank_round(&value, c_value, iter, flag);
+    ck_assert_int_eq(value, expected);
+}
+END_TEST
+
+// Сюиты и запуск допишу + функцию сравнения
+
+
