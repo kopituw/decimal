@@ -411,7 +411,25 @@ END_TEST
 
 // Тесты на деление
 
+START_TEST(test_div_by_zero) {
+    s21_decimal a = INIT_DECIMAL(3);
+    s21_decimal b = INIT_DECIMAL(0);
+    s21_decimal result;
 
+    int status = s21_div(a, b, &result);
+    ck_assert_int_eq(status, DIVISION_BY_ZERO);
+}
+END_TEST
+
+START_TEST(test_div_simple) {
+    s21_decimal a = INIT_DECIMAL(15);
+    s21_decimal b = INIT_DECIMAL(3);
+    s21_decimal result;
+
+    s21_div(a, b, &result);
+    ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)));
+}
+END_TEST
 
 
 Suite* decimal_suite(void) {
@@ -452,6 +470,8 @@ Suite* decimal_suite(void) {
     tcase_add_test(tc, test_mul_overflow_negative);
     tcase_add_test(tc, test_mul_different_scales);
     tcase_add_test(tc, test_mul_remove_zeros);
+    tcase_add_test(tc, test_div_by_zero);
+    tcase_add_test(tc, test_div_simple);
     suite_add_tcase(s, tc);
     return s;
 }
