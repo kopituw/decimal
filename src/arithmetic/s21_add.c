@@ -68,5 +68,5 @@ int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
         set_bit(result, i, dec1_bit ^ dec2_bit ^ mem);
         mem = (dec1_bit && dec2_bit) || (dec1_bit && mem) || (dec2_bit && mem);
     }
-    return mem;
+    return mem ? INF : OK;
 }

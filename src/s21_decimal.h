@@ -59,7 +59,7 @@ int s21_is_less(s21_decimal, s21_decimal);
 int s21_is_less_or_equal(s21_decimal, s21_decimal);
 int s21_is_greater(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal(s21_decimal, s21_decimal);
-int s21_is_equal(s21_decimal, s21_decimal);
+int s21_is_equal(s21_decimal value_1, s21_decimal value_2);
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
 // модальное сравнение
@@ -67,7 +67,7 @@ int s21_is_less_modal(s21_decimal, s21_decimal);
 int s21_is_less_or_equal_modal(s21_decimal, s21_decimal);
 int s21_is_greater_modal(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal_modal(s21_decimal, s21_decimal);
-int s21_is_equal_modal(s21_decimal, s21_decimal);
+int s21_is_equal_modal(s21_decimal value_1, s21_decimal value_2);
 int s21_is_not_equal_modal(s21_decimal, s21_decimal);
 
 // преобразование
@@ -106,7 +106,8 @@ void big_mul10(s21_big_decimal *dst);
 int normalize(s21_decimal *dec1, s21_decimal *dec2);
 int big_normalize(s21_decimal value1, s21_decimal value2, s21_big_decimal *big_value1,
                   s21_big_decimal *big_value2, int *scale);
-int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
+int bank_round(s21_decimal *dec, unsigned count);
+// int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);
 int correct_last_bits(s21_decimal value);
