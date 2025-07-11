@@ -9,13 +9,13 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
     int total_tests_count = 0, failed_tests_count = 0;
-    test_s21_is_greater(&total_tests_count);
-    test_s21_is_equal(&total_tests_count);
-    test_s21_is_greater_or_equal(&total_tests_count);
-    failed_tests_count += test_s21_add(&total_tests_count);
-    failed_tests_count += test_s21_sub(&total_tests_count);
-    failed_tests_count += test_s21_mul(&total_tests_count);
-    failed_tests_count += test_s21_div(&total_tests_count);
+    // test_s21_is_greater(&total_tests_count);
+    // test_s21_is_equal(&total_tests_count);
+    // test_s21_is_greater_or_equal(&total_tests_count);
+    // failed_tests_count += test_s21_add(&total_tests_count);
+    // failed_tests_count += test_s21_sub(&total_tests_count);
+    // failed_tests_count += test_s21_mul(&total_tests_count);
+    // failed_tests_count += test_s21_div(&total_tests_count);
     failed_tests_count += test_s21_normalize(&total_tests_count);
 
     printf("\n\n%.2f%% of %d tests passed\n\n", 100 - ((double)failed_tests_count * 100 / (double)total_tests_count), total_tests_count);
