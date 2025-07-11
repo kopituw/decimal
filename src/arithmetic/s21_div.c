@@ -2,8 +2,11 @@
 
 int s21_div(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
 {
-    if (!result || is_zero(dec1) || is_zero(dec2))
-        return 0;
+    if (is_zero(dec1) || is_zero(dec2))
+        return DIVISION_BY_ZERO;
+
+    if (!result)
+        return NULL_POINTER_EXCEPTION;
 
     if (s21_is_equal(dec1, dec2))
     {

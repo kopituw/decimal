@@ -15,6 +15,9 @@
 
 int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
 {
+    if (!c)
+        return NULL_POINTER_EXCEPTION;
+
     s21_decimal temp;
     init_decimal(&temp);
     int overflow = 0;

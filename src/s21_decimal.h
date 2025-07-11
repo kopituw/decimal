@@ -11,8 +11,21 @@
 #define SCALE_MASK 0x00FF0000
 
 // коды возвращаемых результатов
-enum returns { OK, INF, NEGATIVE_INF, DIVISION_BY_ZERO, CONVERSION_ERROR };
-enum converts { OK, CONVERTING_ERROR };
+enum returns
+{
+    OK,
+    INF,
+    NEGATIVE_INF,
+    DIVISION_BY_ZERO,
+    CONVERSION_ERROR,
+    NULL_POINTER_EXCEPTION,
+    WRONG_SCALE
+};
+enum converts
+{
+    CONVERTING_SUCCESS,
+    CONVERTING_ERROR
+};
 
 typedef struct s21_decimal
 {
@@ -49,6 +62,14 @@ int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
+// модальное сравнение
+int s21_is_less_modal(s21_decimal, s21_decimal);
+int s21_is_less_or_equal_modal(s21_decimal, s21_decimal);
+int s21_is_greater_modal(s21_decimal, s21_decimal);
+int s21_is_greater_or_equal_modal(s21_decimal, s21_decimal);
+int s21_is_equal_modal(s21_decimal, s21_decimal);
+int s21_is_not_equal_modal(s21_decimal, s21_decimal);
+
 // преобразование
 int s21_from_int_to_decimal(int src, s21_decimal *dst);
 int s21_from_float_to_decimal(float src, s21_decimal *dst);
@@ -82,7 +103,7 @@ void null_decimal(s21_decimal *decimal);
 void big_null_decimal(s21_big_decimal *decimal);
 int mul10(s21_decimal *dst);
 void big_mul10(s21_big_decimal *dst);
-// int normalize(s21_decimal *value1, s21_decimal *value2);
+int normalize(s21_decimal dec1, s21_decimal dec2);
 int big_normalize(s21_decimal value1, s21_decimal value2, s21_big_decimal *big_value1,
                   s21_big_decimal *big_value2, int *scale);
 int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
