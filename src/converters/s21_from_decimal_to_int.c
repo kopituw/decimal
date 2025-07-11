@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int s21_from_decimal_to_int(s21_decimal src, int *dst){
-	if (!dst) { // src
+	if (!dst) { 
 		return CONVERTING_ERROR;
 	}
 	if (get_scale(&src) != 0) { // truncate
