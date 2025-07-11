@@ -29,18 +29,13 @@ void init_decimal(s21_decimal *decimal)
 
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 {
-    int overflow = normalize(dec_1, dec_2),
-        //  int overflow = 0,
-        exp = get_scale(&dec_1), sign_1 = get_sign(&dec_1), sign_2 = get_sign(&dec_2);
-
-    // if ((overflow = normalize(dec_1, dec_2)) != OK)
-    //     overflow = ;
+    int overflow = normalize(&dec_1, &dec_2),
+        sign_1 = get_sign(&dec_1), sign_2 = get_sign(&dec_2);
 
     if (sign_1 ^ sign_2 && !overflow)
     {
         if (s21_is_greater_or_equal_modal(dec_1, dec_2))
         {
-            printf("s21_is_greater_or_equal_modal\n");
             denya_sub_basic(dec_1, dec_2, result);
 
             if (result->bit[0])
@@ -48,25 +43,18 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
         }
         else
         {
-            printf("is less\n");
             denya_sub_basic(dec_2, dec_1, result);
             if (result->bit[0])
                 set_sign(result, sign_2);
         }
     }
-    else if (overflow)
+    else if (!overflow)
     {
-        printf("overflow: %d\n", overflow);
-    }
-    else
-    {
-
-        printf("+\n");
         denya_add_basic(dec_1, dec_2, result);
         if (result->bit[0])
             set_sign(result, sign_1);
     }
-    return 1;
+    return overflow;
 }
 
 int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
