@@ -26,3 +26,8 @@ int s21_is_less(s21_decimal dec1, s21_decimal dec2)
 {
     return !s21_is_greater(dec1, dec2);
 }
+
+int s21_is_less_modal(s21_decimal dec1, s21_decimal dec2)
+{
+    return !s21_is_greater_modal(dec1, dec2);
+}

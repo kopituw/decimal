@@ -15,5 +15,10 @@ int s21_big_is_equal(s21_big_decimal value1, s21_big_decimal value2)
 
 int s21_is_equal(s21_decimal dec1, s21_decimal dec2)
 {
+    return get_sign(&dec1) == get_sign(&dec2) && dec1.bit[2] == dec2.bit[2] && dec1.bit[1] == dec2.bit[1] && dec1.bit[0] == dec2.bit[0];
+}
+
+int s21_is_equal_modal(s21_decimal dec1, s21_decimal dec2)
+{
     return dec1.bit[2] == dec2.bit[2] && dec1.bit[1] == dec2.bit[1] && dec1.bit[0] == dec2.bit[0];
 }

@@ -2,33 +2,45 @@
 
 int s21_div(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
 {
-    if (!result || is_zero(dec1) || is_zero(dec2))
-        return 0;
+    if (is_zero(dec1) || is_zero(dec2))
+        return DIVISION_BY_ZERO;
 
-    if (s21_is_equal(dec1, dec2))
-    {
-        set_bit(result, 0, 1);
-    }
-    else if (s21_is_less(dec1, dec2))
-    {
-        set_bit(result, 0, 0);
-    }
-    else
-    {
-        init_decimal(result);
-        s21_decimal huy = dec2;
+    if (!result)
+        return NULL_POINTER_EXCEPTION;
 
-        while (s21_is_less_or_equal(huy, dec1))
+    int overflow = normalize(&dec1, &dec2);
+
+    if (overflow == OK)
+    {
+
+        if (s21_is_equal(dec1, dec2))
         {
-            s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
-            s21_mul(dec2, *result, &huy);
+            set_bit(result, 0, 1);
         }
+        else if (s21_is_less(dec1, dec2))
+        {
+            set_bit(result, 0, 0);
+        }
+        else
+        {
+            init_decimal(result);
+            s21_decimal huy = dec2;
 
-        s21_sub(huy, dec2, &huy);
-        s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+            while (s21_is_less_or_equal(huy, dec1))
+            {
+                overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+                if (!overflow)
+                    overflow = s21_mul(dec2, *result, &huy);
+            }
+            if (overflow == OK)
+            {
+                s21_sub(huy, dec2, &huy);
+                s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+            }
+        }
     }
 
-    return 1;
+    return overflow;
 }
 
 // int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {

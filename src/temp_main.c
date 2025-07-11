@@ -9,16 +9,14 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
     int total_tests_count = 0, failed_tests_count = 0;
-    failed_tests_count += test_s21_add(&total_tests_count);
-    failed_tests_count += test_s21_sub(&total_tests_count);
-    test_s21_is_greater(&total_tests_count);
-    test_s21_is_equal(&total_tests_count);
-    test_s21_is_greater_or_equal(&total_tests_count);
-    failed_tests_count += test_s21_mul(&total_tests_count);
-    // failed_tests_count += test_s21_mul_int(&total_tests_count);
-
-    failed_tests_count += test_s21_mul(&total_tests_count);
-    failed_tests_count += test_s21_div(&total_tests_count);
+    // test_s21_is_greater(&total_tests_count);
+    // test_s21_is_equal(&total_tests_count);
+    // test_s21_is_greater_or_equal(&total_tests_count);
+    // failed_tests_count += test_s21_add(&total_tests_count);
+    // failed_tests_count += test_s21_sub(&total_tests_count);
+    // failed_tests_count += test_s21_mul(&total_tests_count);
+    // failed_tests_count += test_s21_div(&total_tests_count);
+    failed_tests_count += test_s21_normalize(&total_tests_count);
 
     printf("\n\n%.2f%% of %d tests passed\n\n", 100 - ((double)failed_tests_count * 100 / (double)total_tests_count), total_tests_count);
 
@@ -38,6 +36,52 @@ int main(void)
     // printf("%+d + %+d = %+d\n", na, nb, na + nb);
 
     return 0;
+}
+
+int test_s21_normalize(int *total_tests_count)
+{
+    int failed_tests_count = 0;
+    int values_a[10] = {1, 5, 8, 26};
+    int values_b[10] = {1, 5, 8, 26};
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (values_a[i] != values_b[j])
+            {
+                (*total_tests_count)++;
+                int na = values_a[i], nb = values_b[j];
+                s21_decimal a = {{1, 0, 0, 0}};
+                s21_decimal b = {{1, 0, 0, 0}};
+                s21_decimal result;
+                init_decimal(&result);
+                set_scale(&a, values_a[i]);
+                set_scale(&b, values_b[j]);
+                char my_res[512] = {0};
+                char exp_res[512] = {0};
+
+                // printf("\nscale = %d %d\n", get_scale(&a), get_scale(&b));
+                normalize(&a, &b);
+
+                // sprintf(my_res, "a scale %s b scale\n", get_scale(&a) == get_scale(&b) ? "==" : "!=");
+                // sprintf(exp_res, "a scale %s b scale\n", get_scale(&a) == get_scale(&b) ? "==" : "!=");
+
+                if (get_scale(&a) == get_scale(&b))
+                {
+                    printf("TEST #%d PASSED!\n", *total_tests_count);
+                    // printf(" my_res: '%s'\nexp_res: '%s'\n", my_res, exp_res);
+                }
+                else
+                {
+                    failed_tests_count++;
+                    printf("TEST #%d FAILED!\n", *total_tests_count);
+                    printf(" my_res: %d %d\nexp_res: %d %d\n", get_scale(&a), get_scale(&b), get_scale(&a), get_scale(&b));
+                }
+            }
+        }
+    }
+    return failed_tests_count;
 }
 
 int test_s21_add(int *total_tests_count)

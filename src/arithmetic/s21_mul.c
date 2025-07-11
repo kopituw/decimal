@@ -15,6 +15,9 @@
 
 int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
 {
+    if (!c)
+        return NULL_POINTER_EXCEPTION;
+
     s21_decimal temp;
     init_decimal(&temp);
     int overflow = 0;
@@ -32,10 +35,11 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
     }
     if (!overflow)
         *c = temp;
-    int sign_1 = get_sign(&a), sign_2 = get_sign(&b);
+
+    // int sign_1 = get_sign(&a), sign_2 = get_sign(&b);
 
     if (c->bit[0])
-        set_sign(c, sign_1 ^ sign_2);
+        set_sign(c, get_sign(&a) ^ get_sign(&b));
 
     return overflow;
 }
