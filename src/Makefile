@@ -11,12 +11,11 @@ OBJ_FILES = $(C_FILES:.c=.o)
 TEST_FILE = test_decimal.c
 TEST_BIN = test
 
-CFLAGS = -Wall -Wextra -Werror -Wpedantic
+CFLAGS = -Wall -Wextra -Werror
 
 all: clean $(LIB_FILE)
 
 $(LIB_FILE): $(OBJ_FILES)
-	$(CC) $(CFLAGS) -c $^
 	ar rcs $@ $^
 
 %.o: %.c

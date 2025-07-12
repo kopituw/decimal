@@ -99,6 +99,7 @@ void big_set_bit(s21_big_decimal *src, int bit, int value);
 int last_bit(s21_decimal numb);
 int big_last_bit(s21_big_decimal numb);
 int shift_left(s21_decimal *value);
+int shift_left_offset(s21_decimal *dec, int offset);
 void null_decimal(s21_decimal *decimal);
 void big_null_decimal(s21_big_decimal *decimal);
 int mul10(s21_decimal *dst);
@@ -106,7 +107,7 @@ void big_mul10(s21_big_decimal *dst);
 int normalize(s21_decimal *dec1, s21_decimal *dec2);
 int big_normalize(s21_decimal value1, s21_decimal value2, s21_big_decimal *big_value1,
                   s21_big_decimal *big_value2, int *scale);
-int bank_round(s21_decimal *dec, unsigned count);
+void bank_round(s21_decimal *dec, unsigned count);
 // int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);
@@ -116,5 +117,9 @@ int remains(s21_big_decimal c_result, s21_big_decimal value_1, s21_big_decimal v
 void shift_right(s21_decimal *value, int offset);
 void big_shift_right(s21_big_decimal *value, int offset);
 int shift_value_len(s21_big_decimal decimal);
+int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+int div10(const s21_decimal *value, s21_decimal *quotient);
+int big_div10(const s21_big_decimal *value, s21_big_decimal *quotient);
+void big_bank_round(s21_big_decimal *value, unsigned count);
 
 #endif

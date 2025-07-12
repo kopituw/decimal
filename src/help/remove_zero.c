@@ -5,14 +5,16 @@ void remove_zero(s21_decimal *value) {
     int scale = get_scale(&c_value);
 
     while (scale != 0) {
-        if (div10_dec(c_value) == 0) {
-            unsigned b = 0;
-            div10(&c_value, &b);
-            scale --;
+        s21_decimal quotient = {0};
+        int remainder = div10(&c_value, &quotient);
+        if (remainder == 0) {
+            c_value = quotient;
+            scale--;
+        } else {
+            break;
         }
     }
 
     set_scale(&c_value, scale);
-
     *value = c_value;
 }
