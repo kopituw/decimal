@@ -1,28 +1,16 @@
 #include "../s21_decimal.h"
 
-int bank_round(s21_decimal *dec, unsigned count)
-{
-    int system_bit = dec->bit[3];
-    int exp = get_scale(dec) - count;
-    while (count > 0 && count < 96)
-    {
-        s21_decimal base = {10, 0, 0, 0}, one = {1, 0, 0, 0}, two = {2, 0, 0, 0}, two_res = {2, 0, 0, 0};
-        if (dec->bit[0] % 10 > 5)
-        {
-            denya_add_basic(*dec, base, dec);
-        }
-        else if (dec->bit[0] % 10 == 5)
-        {
-            s21_remain(*dec, two, &two_res);
-            if (s21_is_not_equal(one, two_res))
-                denya_add_basic(*dec, base, dec);
-        }
-
-        s21_div(*dec, base, dec);
-        count--;
+// Делит value на 10, кладёт результат в quotient, остаток возвращает
+int div10(const s21_decimal *value, s21_decimal *quotient) {
+    init_decimal(quotient);
+    uint64_t rem = 0;
+    for (int i = 2; i >= 0; --i) {
+        uint64_t acc = ((uint64_t)rem << 32) | value->bit[i];
+        quotient->bit[i] = (uint32_t)(acc / 10);
+        rem = acc % 10;
     }
-    dec->bit[3] = system_bit;
-    set_scale(dec, exp);
+    quotient->bit[3] = value->bit[3]; // копируем служебные биты (знак, scale)
+    return (int)rem;
 }
 
 // #include "../s21_decimal.h"
