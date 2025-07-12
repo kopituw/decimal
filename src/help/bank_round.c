@@ -7,40 +7,20 @@ int bank_round(s21_decimal *dec, unsigned count)
     while (count > 0 && count < 96)
     {
         s21_decimal base = {10, 0, 0, 0}, one = {1, 0, 0, 0}, two = {2, 0, 0, 0}, two_res = {2, 0, 0, 0};
-        // s21_decimal dec_mod = {0};
-        // s21_div(*dec, base, &dec_mod);
         if (dec->bit[0] % 10 > 5)
         {
             denya_add_basic(*dec, base, dec);
-            // s21_div(*dec, base, dec);
         }
         else if (dec->bit[0] % 10 == 5)
         {
-            // printf("! after add %u\n", dec->bit[0]);
             s21_remain(*dec, two, &two_res);
-            // printf("! two_res. %u\n", two_res.bit[0]);
             if (s21_is_not_equal(one, two_res))
-            {
                 denya_add_basic(*dec, base, dec);
-                // s21_div(*dec, base, dec);
-                // printf("! %u\n", dec->bit[0] % 10);
-            }
-            else
-            {
-                // s21_div(*dec, base, dec);
-            }
-            // printf("!  1:%u 2:%u %u res = %u\n", value_1.bit[0], value_2.bit[0], huy.bit[0], result->bit[0]);
         }
-        // else
-        // {
-        //     s21_div(*dec, base, dec);
-        //     denya_add_basic(*dec, one, dec);
-        // }
 
         s21_div(*dec, base, dec);
         count--;
     }
-    // dec = dec_mod;
     dec->bit[3] = system_bit;
     set_scale(dec, exp);
 }

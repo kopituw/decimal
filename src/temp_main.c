@@ -9,14 +9,14 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
     int total_tests_count = 0, failed_tests_count = 0;
-    // test_s21_is_greater(&total_tests_count);
-    // test_s21_is_equal(&total_tests_count);
-    // test_s21_is_greater_or_equal(&total_tests_count);
-    // failed_tests_count += test_s21_add(&total_tests_count);
-    // failed_tests_count += test_s21_sub(&total_tests_count);
-    // failed_tests_count += test_s21_mul(&total_tests_count);
-    // failed_tests_count += test_s21_div(&total_tests_count);
-    // failed_tests_count += test_s21_normalize(&total_tests_count);
+    test_s21_is_greater(&total_tests_count);
+    test_s21_is_equal(&total_tests_count);
+    test_s21_is_greater_or_equal(&total_tests_count);
+    failed_tests_count += test_s21_add(&total_tests_count);
+    failed_tests_count += test_s21_sub(&total_tests_count);
+    failed_tests_count += test_s21_mul(&total_tests_count);
+    failed_tests_count += test_s21_div(&total_tests_count);
+    failed_tests_count += test_s21_normalize(&total_tests_count);
     failed_tests_count += test_s21_bank_round(&total_tests_count);
 
     printf("\n\n%.2f%% of %d tests passed\n\n", 100 - ((double)failed_tests_count * 100 / (double)total_tests_count), total_tests_count);
@@ -86,41 +86,18 @@ int test_s21_normalize(int *total_tests_count)
 int test_s21_bank_round(int *total_tests_count)
 {
     int failed_tests_count = 0;
-    s21_decimal decimals_to_round[4] = {{{16644, 0, 0, 0}}, {{12346, 0, 0, 0}}, {{123450, 0, 0, 0}}, {{123455, 0, 0, 0}}, {{12345, 0, 0, 0}}};
+    s21_decimal decimals_to_round[5] = {{{16644, 0, 0, 0}}, {{12346, 0, 0, 0}}, {{123450, 0, 0, 0}}, {{123455, 0, 0, 0}}, {{12345, 0, 0, 0}}};
     int r_values[3] = {1, 2, 3};
 
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-
             (*total_tests_count)++;
             s21_decimal a = decimals_to_round[i];
 
-            char my_res[512] = {0};
-            char exp_res[512] = {0};
-
-            // printf("\nscale = %d %d\n", get_scale(&a), get_scale(&b));
             bank_round(&a, r_values[j]);
-
-            // sprintf(my_res, "a scale %s b scale\n", get_scale(&a) == get_scale(&b) ? "==" : "!=");
-            // sprintf(exp_res, "a scale %s b scale\n", get_scale(&a) == get_scale(&b) ? "==" : "!=");
-            // if (j / 2)
             printf("dec before: %u and after rounding for %d: %u\n\n", decimals_to_round[i].bit[0], r_values[j], a.bit[0]);
-
-            // printf("dec before: %u%u%u and after rounding:%u%u%u\n", decimals_to_round[i].bit[0], decimals_to_round[i].bit[1], decimals_to_round[i].bit[2], a.bit[0], a.bit[1], a.bit[2]);
-
-            // if (s21_is_equal(a, decimal_to_big[i]))
-            // {
-            //     printf("TEST #%d PASSED!\n", *total_tests_count);
-            //     // printf(" my_res: '%s'\nexp_res: '%s'\n", my_res, exp_res);
-            // }
-            // else
-            // {
-            //     failed_tests_count++;
-            //     printf("TEST #%d FAILED!\n", *total_tests_count);
-            //     printf(" my_res: %d %d\nexp_res: %d %d\n", get_scale(&a), get_scale(&b), get_scale(&a), get_scale(&b));
-            // }
         }
     }
     return failed_tests_count;
