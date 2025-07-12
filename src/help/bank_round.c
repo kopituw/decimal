@@ -24,6 +24,7 @@ int bank_round(s21_decimal *dec, unsigned count)
     dec->bit[3] = system_bit;
     set_scale(dec, exp);
 }
+
 // #include "../s21_decimal.h"
 
 // int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag)
