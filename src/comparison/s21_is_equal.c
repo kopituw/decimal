@@ -13,12 +13,12 @@ int s21_big_is_equal(s21_big_decimal value1, s21_big_decimal value2)
     return flag;
 }
 
-int s21_is_equal(s21_decimal dec1, s21_decimal dec2)
+int s21_is_equal(s21_decimal value_1, s21_decimal value_2)
 {
-    return get_sign(&dec1) == get_sign(&dec2) && dec1.bit[2] == dec2.bit[2] && dec1.bit[1] == dec2.bit[1] && dec1.bit[0] == dec2.bit[0];
+    return get_sign(&value_1) == get_sign(&value_2) && value_1.bit[2] == value_2.bit[2] && value_1.bit[1] == value_2.bit[1] && value_1.bit[0] == value_2.bit[0];
 }
 
-int s21_is_equal_modal(s21_decimal dec1, s21_decimal dec2)
+int s21_is_equal_modal(s21_decimal value_1, s21_decimal value_2)
 {
-    return dec1.bit[2] == dec2.bit[2] && dec1.bit[1] == dec2.bit[1] && dec1.bit[0] == dec2.bit[0];
+    return value_1.bit[2] == value_2.bit[2] && value_1.bit[1] == value_2.bit[1] && value_1.bit[0] == value_2.bit[0];
 }

@@ -9,14 +9,15 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
     int total_tests_count = 0, failed_tests_count = 0;
-    // test_s21_is_greater(&total_tests_count);
-    // test_s21_is_equal(&total_tests_count);
-    // test_s21_is_greater_or_equal(&total_tests_count);
-    // failed_tests_count += test_s21_add(&total_tests_count);
-    // failed_tests_count += test_s21_sub(&total_tests_count);
-    // failed_tests_count += test_s21_mul(&total_tests_count);
-    // failed_tests_count += test_s21_div(&total_tests_count);
+    test_s21_is_greater(&total_tests_count);
+    test_s21_is_equal(&total_tests_count);
+    test_s21_is_greater_or_equal(&total_tests_count);
+    failed_tests_count += test_s21_add(&total_tests_count);
+    failed_tests_count += test_s21_sub(&total_tests_count);
+    failed_tests_count += test_s21_mul(&total_tests_count);
+    failed_tests_count += test_s21_div(&total_tests_count);
     failed_tests_count += test_s21_normalize(&total_tests_count);
+    failed_tests_count += test_s21_bank_round(&total_tests_count);
 
     printf("\n\n%.2f%% of %d tests passed\n\n", 100 - ((double)failed_tests_count * 100 / (double)total_tests_count), total_tests_count);
 
@@ -41,12 +42,12 @@ int main(void)
 int test_s21_normalize(int *total_tests_count)
 {
     int failed_tests_count = 0;
-    int values_a[10] = {1, 5, 8, 26};
-    int values_b[10] = {1, 5, 8, 26};
+    int values_a[4] = {1, 5, 8, 26};
+    int values_b[4] = {1, 5, 8, 26};
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 4; j++)
         {
             if (values_a[i] != values_b[j])
             {
@@ -58,8 +59,6 @@ int test_s21_normalize(int *total_tests_count)
                 init_decimal(&result);
                 set_scale(&a, values_a[i]);
                 set_scale(&b, values_b[j]);
-                char my_res[512] = {0};
-                char exp_res[512] = {0};
 
                 // printf("\nscale = %d %d\n", get_scale(&a), get_scale(&b));
                 normalize(&a, &b);
@@ -79,6 +78,26 @@ int test_s21_normalize(int *total_tests_count)
                     printf(" my_res: %d %d\nexp_res: %d %d\n", get_scale(&a), get_scale(&b), get_scale(&a), get_scale(&b));
                 }
             }
+        }
+    }
+    return failed_tests_count;
+}
+
+int test_s21_bank_round(int *total_tests_count)
+{
+    int failed_tests_count = 0;
+    s21_decimal decimals_to_round[5] = {{{16644, 0, 0, 0}}, {{12346, 0, 0, 0}}, {{123450, 0, 0, 0}}, {{123455, 0, 0, 0}}, {{12345, 0, 0, 0}}};
+    int r_values[3] = {1, 2, 3};
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            (*total_tests_count)++;
+            s21_decimal a = decimals_to_round[i];
+
+            bank_round(&a, r_values[j]);
+            printf("dec before: %u and after rounding for %d: %u\n\n", decimals_to_round[i].bit[0], r_values[j], a.bit[0]);
         }
     }
     return failed_tests_count;
@@ -248,8 +267,8 @@ int test_s21_mul(int *total_tests_count)
 int test_s21_div(int *total_tests_count)
 {
     int failed_tests_count = 0;
-    int values_a[10] = {11, 5, 8, 6, 26, 10, 2};
-    int values_b[10] = {11, 5, 8, 29, 9, 10, 2};
+    int values_a[10] = {12344, 5, 8, 6, 26, 10, 2};
+    int values_b[10] = {12344, 5, 8, 29, 9, 10, 2};
 
     for (int i = 0; i < 5; i++)
     {

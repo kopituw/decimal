@@ -1,41 +1,90 @@
 #include "../s21_decimal.h"
 
-int s21_div(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
+int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 {
-    if (is_zero(dec1) || is_zero(dec2))
+    if (is_zero(value_1) || is_zero(value_2))
         return DIVISION_BY_ZERO;
 
     if (!result)
         return NULL_POINTER_EXCEPTION;
 
-    int overflow = normalize(&dec1, &dec2);
+    init_decimal(result);
+    int overflow = normalize(&value_1, &value_2);
 
     if (overflow == OK)
     {
 
-        if (s21_is_equal(dec1, dec2))
+        if (s21_is_equal(value_1, value_2))
         {
             set_bit(result, 0, 1);
         }
-        else if (s21_is_less(dec1, dec2))
+        else if (s21_is_less(value_1, value_2))
         {
             set_bit(result, 0, 0);
         }
         else
         {
-            init_decimal(result);
-            s21_decimal huy = dec2;
+            s21_decimal huy = value_2;
 
-            while (s21_is_less_or_equal(huy, dec1))
+            // while (s21_is_less_or_equal(huy, value_1))
+            while (huy.bit[0] <= value_1.bit[0])
             {
+                // printf("! from div. 1:%u 2:%u %u res = %u\n", value_1.bit[0], value_2.bit[0], huy.bit[0], result->bit[0]);
                 overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
                 if (!overflow)
-                    overflow = s21_mul(dec2, *result, &huy);
+                    overflow = s21_mul(value_2, *result, &huy);
             }
             if (overflow == OK)
             {
-                s21_sub(huy, dec2, &huy);
+                s21_sub(huy, value_2, &huy);
                 s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+            }
+        }
+    }
+
+    return overflow;
+}
+
+int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
+{
+    if (is_zero(value_1) || is_zero(value_2))
+        return DIVISION_BY_ZERO;
+
+    if (!result)
+        return NULL_POINTER_EXCEPTION;
+
+    init_decimal(result);
+    int overflow = normalize(&value_1, &value_2);
+
+    if (overflow == OK)
+    {
+
+        if (s21_is_equal(value_1, value_2))
+        {
+            set_bit(result, 0, 1);
+        }
+        else if (s21_is_less(value_1, value_2))
+        {
+            set_bit(result, 0, 0);
+        }
+        else
+        {
+            s21_decimal huy = value_2;
+
+            // while (s21_is_less_or_equal(huy, value_1))
+            while (huy.bit[0] <= value_1.bit[0])
+            {
+                overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+                if (!overflow)
+                    overflow = s21_mul(value_2, *result, &huy);
+            }
+            if (overflow == OK)
+            {
+                s21_sub(huy, value_2, &huy);
+                s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+                s21_mul(value_2, *result, result);
+                s21_sub(value_1, *result, result);
+                // printf("! from div. 1:%u 2:%u %u res = %u\n", value_1.bit[0], value_2.bit[0], huy.bit[0], result->bit[0]);
             }
         }
     }
