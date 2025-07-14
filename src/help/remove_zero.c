@@ -1,8 +1,8 @@
 #include "../s21_decimal.h"
 
 void remove_zero(s21_decimal *value) {
-    s21_decimal c_value = *value;
-    int scale = get_scale(&c_value);
+  s21_decimal c_value = *value;
+  int scale = get_scale(&c_value);
 
     while (scale != 0) {
         s21_decimal quotient = {0};
@@ -14,6 +14,7 @@ void remove_zero(s21_decimal *value) {
             break;
         }
     }
+  }
 
     set_scale(&c_value, scale);
     *value = c_value;

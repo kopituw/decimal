@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/karleeha/C5_s21_decimal.ID_353529-Team_TL_karleeha.a59f28e9_0537_4960-2/src",
+      "program": "/Users/karleeha/C5_s21_decimal.ID_353529-Team_TL_karleeha.a59f28e9_0537_4960-2/src/build/Debug/outDebug"
+    }
+  ]
+}
