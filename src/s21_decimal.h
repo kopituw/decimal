@@ -107,7 +107,7 @@ void big_mul10(s21_big_decimal *dst);
 int normalize(s21_decimal *dec1, s21_decimal *dec2);
 int big_normalize(s21_decimal value1, s21_decimal value2, s21_big_decimal *big_value1,
                   s21_big_decimal *big_value2, int *scale);
-int bank_round(s21_decimal *dec, unsigned count);
+void bank_round(s21_decimal *dec, unsigned count);
 // int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);

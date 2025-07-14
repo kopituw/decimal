@@ -3,9 +3,9 @@
 
 #include "s21_decimal.h"
 
-typedef struct s21_decimal {
-  uint32_t bit[4];
-} s21_decimal;
+// typedef struct s21_decimal {
+//   uint32_t bit[4];
+// } s21_decimal;
 
 // функция хелпер, чтобы сразу задавать тестовым числам целые значения
 s21_decimal INIT_DECIMAL(int64_t value) {
@@ -29,7 +29,8 @@ s21_decimal INIT_DECIMAL(int64_t value) {
 
 // функция хелпер, чтобы сравнивать структуры побитово
 bool is_equal(s21_decimal a, s21_decimal b) {
-  for (int i; i < 4; i++) {
+	 int i = 0;
+  for (; i < 4; i++) {
     if (a.bit[i] != b.bit[i]) {
       return false;
     }
@@ -85,7 +86,7 @@ START_TEST(test_simple_add_negative_negative) {
 }
 END_TEST
 
-START_TEST(test_simple_add_zero_positive) {
+START_TEST(test_simple_add_zeroo_positive) {
   s21_decimal a = INIT_DECIMAL(0);
   s21_decimal b = INIT_DECIMAL(0);
   s21_decimal result;
@@ -120,7 +121,7 @@ START_TEST(test_add_max_decimal) {
   s21_decimal one = INIT_DECIMAL(1);
   s21_decimal result;
 
-  int status = s21_add(a, b, &result);
+  int status = s21_add(max, one, &result);
   ck_assert_int_eq(status, INF);
 }
 END_TEST
@@ -130,7 +131,7 @@ START_TEST(test_add_max_decimal_negative) {
   s21_decimal one = INIT_DECIMAL(-1);
   s21_decimal result;
 
-  int status = s21_add(a, b, &result);
+  int status = s21_add(max, one, &result);
   ck_assert_int_eq(status, NEGATIVE_INF);
 }
 END_TEST
@@ -428,7 +429,7 @@ START_TEST(test_div_simple) {
   s21_decimal result;
 
   s21_div(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)));
+  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)), 1);
 }
 END_TEST
 
@@ -440,6 +441,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_simple_add_positive_negative);
   tcase_add_test(tc, test_simple_add_negative_negative);
   tcase_add_test(tc, test_simple_add_zero_positive);
+tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_simple_add_zero_negative);
   tcase_add_test(tc, test_add_max_decimal);
   tcase_add_test(tc, test_add_max_decimal_negative);
@@ -471,7 +473,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_mul_different_scales);
   tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
-  tcase_add_test(tc, test_div_simple);
+   tcase_add_test(tc, test_div_simple);
   suite_add_tcase(s, tc);
   return s;
 }

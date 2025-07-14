@@ -11,7 +11,7 @@ OBJ_FILES = $(C_FILES:.c=.o)
 TEST_FILE = test_decimal.c
 TEST_BIN = test
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -lcheck
 
 all: clean $(LIB_FILE)
 
