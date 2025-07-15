@@ -4,7 +4,7 @@ CC = gcc
 LIB_NAME = s21_decimal
 LIB_FILE = lib$(LIB_NAME).a
 
-SRC_DIRS = arithmetic help comparison
+SRC_DIRS = arithmetic help comparison converters
 C_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES = $(C_FILES:.c=.o)
 

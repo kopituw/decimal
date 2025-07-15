@@ -23,7 +23,7 @@ enum returns {
 };
 enum converts
 {
-    OK,
+    SUCCESS,
 	CONVERTING_ERROR
 };
 
