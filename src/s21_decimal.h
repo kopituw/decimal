@@ -23,7 +23,8 @@ enum returns {
 };
 enum converts
 {
-    CONVERTING_ERROR
+    OK,
+	CONVERTING_ERROR
 };
 
 typedef struct s21_decimal {

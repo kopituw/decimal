@@ -1,5 +1,6 @@
 #include "../s21_decimal.h"
 
+const double MAX_DECIMAL = 79228162514264337593543950335.0;
 
 int s21_from_decimal_to_float(s21_decimal src, float *dst){
 	if (dst == NULL)
@@ -18,28 +19,37 @@ int s21_from_decimal_to_float(s21_decimal src, float *dst){
 		}
 		return OK;
 	}
+	if (scale > 28){
+		*dst = 0.0f;
+		return CONVERTING_ERROR;
+	}
 
 		while (!(mantissa.bit[2] & 0x80000000) && scale > 0) {
 			shift_left(&mantissa);
 			scale--;
 		}
-		double res = 0.0;
-		double res = (double)mantissa.bit[0] +
-					 (double)mantissa.bit[1] * 4294967296.0 +
-					 (double)mantissa.bit[2] * 18446744073709551616.0;
+		long double res = 0.0;
+		long double res = (long double)mantissa.bit[0] +
+					 (long double)mantissa.bit[1] * 4294967296.0 +
+					 (long double)mantissa.bit[2] * 18446744073709551616.0;
 
-		
 		while (scale > 0 ) {
 			res /= 10.0;
 			scale --;
 		}
+		
 		if (sign) {
 			res = -res;
 		}
 		*dst = (float)res;
-			
+			if (res  < 0.0000000000000000000000000001 ){
+				return CONVERTING_ERROR;
+			}
+			if (res > MAX_DECIMAL) {
+				return CONVERTING_ERROR;
+			}
 			return OK;
 		}
-	
+
 
 
