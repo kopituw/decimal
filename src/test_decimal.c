@@ -3,10 +3,6 @@
 
 #include "s21_decimal.h"
 
-typedef struct s21_decimal {
-  uint32_t bit[4];
-} s21_decimal;
-
 // функция хелпер, чтобы сразу задавать тестовым числам целые значения
 s21_decimal INIT_DECIMAL(int64_t value) {
   s21_decimal dec = {0};
@@ -432,6 +428,16 @@ START_TEST(test_div_simple) {
 }
 END_TEST
 
+START_TEST(test_decimal_to_float_1) {
+  s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
+  float res;
+  float expected = 1.5;
+
+  s21_from_decimal_to_float(value, &res);
+  ck_assert_float_eq(res, expected);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -472,6 +478,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
+  tcase_add_test(test_decimal_to_float_1);
   suite_add_tcase(s, tc);
   return s;
 }
