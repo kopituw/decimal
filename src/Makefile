@@ -1,37 +1,46 @@
 # CC = gcc -Wall -Wextra -Werror -Wpedantic
+
+ifeq ($(UNAME_S),Linux)
+ OPEN_CMD = xdg-open
+ CFLAGS = -lcheck -lsubunit -lm -lrt -lpthread -D_GNU_SOURCE
+endif
+ifeq ($(UNAME_S),Darwin)
+ OPEN_CMD = open
+ CFLAGS = -lcheck -lpthread -lm
+endif
+
 CC = gcc
 
 LIB_NAME = s21_decimal
 LIB_FILE = lib$(LIB_NAME).a
 
-
 SRC_DIRS = arithmetic help comparison
 C_FILES = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES = $(C_FILES:.c=.o)
 
-all:clean
+TEST_FILE = test_decimal.c
+TEST_BIN = test
 
-test: clean temp_main.c $(LIB_FILE)
-	$(CC) $(CFLAGS) temp_main.c -o $@ -L. -l$(LIB_NAME)
-	./test
+CFLAGS = -Wall -Wextra -Werror
 
-
-test_gcov: clean temp_main.c $(LIB_FILE)
-	$(CC) $(CFLAGS) -fprofile-arcs -ftest-coverage -lcheck -lpthread -lm test_for_denya.c -o $@ -L. -l$(LIB_NAME)
-	./test_gcov
-	mkdir -p logs
-	gcovr --html-details -e "test_for_denya.c" -o logs/report.html
-	$(OPEN_CMD) logs/report.html
-
+all: clean $(LIB_FILE)
 
 $(LIB_FILE): $(OBJ_FILES)
 	ar rcs $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) -c $< -o $@
 
-# Очистка
+test: $(LIB_FILE) $(TEST_FILE)
+	$(CC) $(CFLAGS)  -L. -l$(LIB_NAME) $(TEST_FILE) -o $(TEST_BIN)
+	./$(TEST_BIN)
+
+ttest: clean temp_main.c $(LIB_FILE)
+	$(CC) -lm temp_main.c -o $@ -L. -l$(LIB_NAME)
+	./ttest
+
+
 clean:
-	rm -f $(OBJ_FILES) $(LIB_FILE) test
+	rm -f $(OBJ_FILES) $(LIB_FILE) $(TEST_BIN)
 
-.PHONY: all clean
+.PHONY: all clean test
