@@ -1,5 +1,6 @@
 #include "../s21_decimal.h"
 
+<<<<<<< HEAD
 int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
   int result = 0;
   int is_comparing = 1;
@@ -11,6 +12,23 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
       is_comparing = 0;
     }
     if (bit1 < bit2) {
+=======
+int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2)
+{
+  int result = 0;
+  int is_comparing = 1;
+  for (int i = 255; i >= 0 && is_comparing; i--)
+  {
+    int bit1 = big_get_bit(value1, i);
+    int bit2 = big_get_bit(value2, i);
+    if (bit1 > bit2)
+    {
+      result = 1;
+      is_comparing = 0;
+    }
+    if (bit1 < bit2)
+    {
+>>>>>>> watchsan
       result = 0;
       is_comparing = 0;
     }
@@ -18,6 +36,7 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
   return result;
 }
 
+<<<<<<< HEAD
 int s21_is_greater(s21_decimal dec1, s21_decimal dec2) {
   int result = -1;
   if (get_sign(&dec1) != get_sign(&dec2)) {
@@ -39,6 +58,43 @@ int s21_is_greater_modal(s21_decimal dec1, s21_decimal dec2) {
     if (dec1.bit[i] != dec2.bit[i]) result = dec1.bit[i] > dec2.bit[i];
   }
   if (result == -1) result = 0;
+=======
+int s21_is_greater(s21_decimal dec1, s21_decimal dec2)
+{
+  int result = -1;
+  if (get_sign(&dec1) != get_sign(&dec2))
+  {
+    result = get_sign(&dec1) < get_sign(&dec2);
+  }
+
+  if (get_scale(&dec1) != get_scale(&dec2))
+  {
+    result = get_scale(&dec1) > get_scale(&dec2);
+  }
+
+  for (int i = 2; i >= 0 && result == -1; i--)
+  {
+    if (dec1.bit[i] != dec2.bit[i])
+      result = dec1.bit[i] > dec2.bit[i];
+  }
+  if (result == -1)
+    result = 0;
+
+  return result;
+}
+
+int s21_is_greater_modal(s21_decimal dec1, s21_decimal dec2)
+{
+  int result = -1;
+
+  for (int i = 2; i >= 0 && result == -1; i--)
+  {
+    if (dec1.bit[i] != dec2.bit[i])
+      result = dec1.bit[i] > dec2.bit[i];
+  }
+  if (result == -1)
+    result = 0;
+>>>>>>> watchsan
 
   return result;
 }

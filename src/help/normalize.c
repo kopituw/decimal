@@ -3,18 +3,41 @@
 int normalize(s21_decimal *dec1, s21_decimal *dec2) {
   int scale1 = get_scale(dec1), scale2 = get_scale(dec2);
 
+<<<<<<< HEAD
   if (scale1 >= 28) {
     if (get_sign(dec1)) {
       return NEGATIVE_INF;
     } else {
+=======
+  printf("\nscales: %d %d\n", scale1, scale2);
+  if (scale1 >= 28)
+  {
+    if (get_sign(dec1))
+    {
+      return NEGATIVE_INF;
+    }
+    else
+    {
+>>>>>>> watchsan
       return INF;
     }
   }
 
+<<<<<<< HEAD
   if (scale2 >= 28) {
     if (get_sign(dec2)) {
       return NEGATIVE_INF;
     } else {
+=======
+  if (scale2 >= 28)
+  {
+    if (get_sign(dec2))
+    {
+      return NEGATIVE_INF;
+    }
+    else
+    {
+>>>>>>> watchsan
       return INF;
     }
   }
@@ -39,7 +62,12 @@ int normalize(s21_decimal *dec1, s21_decimal *dec2) {
 
 int big_normalize(s21_decimal value1, s21_decimal value2,
                   s21_big_decimal *big_value1, s21_big_decimal *big_value2,
+<<<<<<< HEAD
                   int *scale) {
+=======
+                  int *scale)
+{
+>>>>>>> watchsan
   int exp1 = get_scale(&value1), exp2 = get_scale(&value2);
   int diff = exp1 - exp2;
   int c_exp = 0;
@@ -66,6 +94,7 @@ int big_normalize(s21_decimal value1, s21_decimal value2,
   return 0;
 }
 
+<<<<<<< HEAD
 void remove_zero(s21_decimal *value) {
     s21_decimal c_value = *value;
     int scale = get_scale(&c_value);
@@ -83,4 +112,28 @@ void remove_zero(s21_decimal *value) {
 
     set_scale(&c_value, scale);
     *value = c_value;
+=======
+void remove_zero(s21_decimal *value)
+{
+  s21_decimal c_value = *value;
+  int scale = get_scale(&c_value);
+
+  while (scale != 0)
+  {
+    s21_decimal quotient = {0};
+    int remainder = div10(&c_value, &quotient);
+    if (remainder == 0)
+    {
+      c_value = quotient;
+      scale--;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  set_scale(&c_value, scale);
+  *value = c_value;
+>>>>>>> watchsan
 }

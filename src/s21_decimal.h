@@ -6,13 +6,17 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
 
 // коды возвращаемых результатов
+<<<<<<< HEAD
 enum returns {
+=======
+enum returns
+{
+>>>>>>> watchsan
   OK,
   INF,
   NEGATIVE_INF,
@@ -23,6 +27,7 @@ enum returns {
 };
 enum converts
 {
+<<<<<<< HEAD
     SUCCESS,
 	CONVERTING_ERROR
 };
@@ -32,10 +37,26 @@ typedef struct s21_decimal {
 } s21_decimal;
 
 typedef struct {
+=======
+  CONVERTING_ERROR
+};
+
+typedef struct s21_decimal
+{
+  uint32_t bit[4];
+} s21_decimal;
+
+typedef struct
+{
+>>>>>>> watchsan
   uint32_t b_bit[8];
 } s21_big_decimal;
 
 // TESTS
+int test_s21_is_greater(int *total_tests_count);
+int test_s21_bank_round(int *total_tests_count);
+int test_s21_is_greater_or_equal(int *total_tests_count);
+int test_s21_is_equal(int *total_tests_count);
 int test_s21_add(int *total_tests_count);
 int test_s21_sub(int *total_tests_count);
 int test_s21_div(int *total_tests_count);
@@ -106,10 +127,19 @@ void big_null_decimal(s21_big_decimal *decimal);
 int mul10(s21_decimal *dst);
 void big_mul10(s21_big_decimal *dst);
 int normalize(s21_decimal *dec1, s21_decimal *dec2);
+<<<<<<< HEAD
 int big_normalize(s21_decimal value1, s21_decimal value2, s21_big_decimal *big_value1,
                   s21_big_decimal *big_value2, int *scale);
 void bank_round(s21_decimal *dec, unsigned count);
 // int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter, unsigned flag);
+=======
+int big_normalize(s21_decimal value1, s21_decimal value2,
+                  s21_big_decimal *big_value1, s21_big_decimal *big_value2,
+                  int *scale);
+void bank_round(s21_decimal *dec, unsigned count);
+// int bank_round(s21_big_decimal *value, s21_big_decimal value2, unsigned iter,
+// unsigned flag);
+>>>>>>> watchsan
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);
 int correct_last_bits(s21_decimal value);

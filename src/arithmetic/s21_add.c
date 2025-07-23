@@ -1,7 +1,14 @@
 #include "../s21_decimal.h"
 
+<<<<<<< HEAD
 void init_decimal(s21_decimal *decimal) {
   for (int i = 0; i < 128; i++) set_bit(decimal, i, 0);
+=======
+void init_decimal(s21_decimal *decimal)
+{
+  for (int i = 0; i < 128; i++)
+    set_bit(decimal, i, 0);
+>>>>>>> watchsan
 }
 
 // void norm_decimal(s21_decimal dec1, s21_decimal dec2)
@@ -26,6 +33,7 @@ void init_decimal(s21_decimal *decimal) {
 //     set_scale(&max_dec, min_scale);
 // }
 
+<<<<<<< HEAD
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result) {
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),
       sign_2 = get_sign(&dec_2), scale = get_scale(&dec_1);
@@ -65,5 +73,71 @@ int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result) {
     set_bit(result, i, dec1_bit ^ dec2_bit ^ mem);
     mem = (dec1_bit && dec2_bit) || (dec1_bit && mem) || (dec2_bit && mem);
   }
+=======
+int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
+{
+  int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),
+      sign_2 = get_sign(&dec_2), scale = get_scale(&dec_1);
+
+  printf("\nhuy: %d\n", overflow);
+  if (sign_1 ^ sign_2 && !overflow)
+  {
+    if (s21_is_greater_or_equal_modal(dec_1, dec_2))
+    {
+      denya_sub_basic(dec_1, dec_2, result);
+
+      if (result->bit[0])
+        set_sign(result, sign_1);
+    }
+    else
+    {
+      denya_sub_basic(dec_2, dec_1, result);
+      if (result->bit[0])
+        set_sign(result, sign_2);
+    }
+  }
+  else if (!overflow)
+  {
+    overflow = denya_add_basic(dec_1, dec_2, result);
+
+    if (result->bit[0])
+      set_sign(result, sign_1);
+    if (overflow == INF && sign_1 && sign_2)
+      overflow = NEGATIVE_INF;
+  }
+
+  if (overflow != OK && get_scale(&dec_1))
+  {
+    bank_round(&dec_1, 1);
+    bank_round(&dec_2, 1);
+    overflow = s21_add(dec_1, dec_2, result);
+  }
+  else
+  {
+    set_scale(result, scale);
+  }
+
+  return overflow;
+}
+
+int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)
+{
+  // printf("%u.%u.%u\n", dec1.bit[0], dec1.bit[1], dec1.bit[2]);
+  init_decimal(result);
+  int mem = 0;
+  for (int i = 0; i < 96; i++)
+  {
+    int dec1_bit = get_bit(dec1, i);
+    int dec2_bit = get_bit(dec2, i);
+
+    // printf("%d\n", dec1_bit);
+    set_bit(result, i, dec1_bit ^ dec2_bit ^ mem);
+    mem = (dec1_bit && dec2_bit) || (dec1_bit && mem) || (dec2_bit && mem);
+  }
+  // printf("huy: %d\n", mem);
+  // printf("\n");
+  // printf("huy: %d\n", mem);
+  // printf("%u.%u.%u\n", dec1.bit[0], dec1.bit[1], dec1.bit[2]);
+>>>>>>> watchsan
   return mem ? INF : OK;
 }
