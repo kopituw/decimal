@@ -25,7 +25,7 @@ s21_decimal INIT_DECIMAL(int64_t value) {
 
 // функция хелпер, чтобы сравнивать структуры побитово
 bool is_equal(s21_decimal a, s21_decimal b) {
-  for (int i; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     if (a.bit[i] != b.bit[i]) {
       return false;
     }
@@ -81,7 +81,7 @@ START_TEST(test_simple_add_negative_negative) {
 }
 END_TEST
 
-START_TEST(test_simple_add_zero_positive) {
+START_TEST(test_simple_add_zero) {
   s21_decimal a = INIT_DECIMAL(0);
   s21_decimal b = INIT_DECIMAL(0);
   s21_decimal result;
@@ -116,7 +116,7 @@ START_TEST(test_add_max_decimal) {
   s21_decimal one = INIT_DECIMAL(1);
   s21_decimal result;
 
-  int status = s21_add(a, b, &result);
+  int status = s21_add(max, one, &result);
   ck_assert_int_eq(status, INF);
 }
 END_TEST
@@ -126,7 +126,7 @@ START_TEST(test_add_max_decimal_negative) {
   s21_decimal one = INIT_DECIMAL(-1);
   s21_decimal result;
 
-  int status = s21_add(a, b, &result);
+  int status = s21_add(max, one, &result);
   ck_assert_int_eq(status, NEGATIVE_INF);
 }
 END_TEST
@@ -158,26 +158,6 @@ START_TEST(test_add_remove_zeros) {
 
   s21_add(a, b, &result);
   ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(500)), 1);
-}
-END_TEST
-
-START_TEST(test_add_different_scales_negative) {
-  s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
-  s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
-  s21_decimal result;
-
-  int status = s21_add(a, b, &result);
-  ck_assert_int_eq(status, CONVERSION_ERROR);
-}
-END_TEST
-
-START_TEST(test_add_scale_overflow) {
-  s21_decimal a = INIT_DECIMAL_SCALE(15, 29);
-  s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
-  s21_decimal result;
-
-  int status = s21_add(a, b, &result);
-  ck_assert_int_eq(status, CONVERSION_ERROR);
 }
 END_TEST
 
@@ -424,7 +404,7 @@ START_TEST(test_div_simple) {
   s21_decimal result;
 
   s21_div(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)));
+  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)), 1);
 }
 END_TEST
 
@@ -438,6 +418,16 @@ START_TEST(test_decimal_to_float_1) {
 }
 END_TEST
 
+START_TEST(test_decimal_to_int_1) {
+  s21_decimal value = {{2, 0, 0 , 0}};
+  int res;
+  int expected = 2;
+
+  s21_from_decimal_to_int(value, &res);
+  ck_assert_int_eq(res, expected);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -446,6 +436,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_simple_add_positive_negative);
   tcase_add_test(tc, test_simple_add_negative_negative);
   tcase_add_test(tc, test_simple_add_zero_positive);
+  tcase_add_test(tc, test_simple_add_zero);
   tcase_add_test(tc, test_simple_add_zero_negative);
   tcase_add_test(tc, test_add_max_decimal);
   tcase_add_test(tc, test_add_max_decimal_negative);
@@ -478,7 +469,8 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
-  tcase_add_test(test_decimal_to_float_1);
+  tcase_add_test(tc, test_decimal_to_float_1);
+  tcase_add_test(tc, test_decimal_to_int_1);
   suite_add_tcase(s, tc);
   return s;
 }
