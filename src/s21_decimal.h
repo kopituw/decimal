@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
@@ -36,6 +35,10 @@ typedef struct {
 } s21_big_decimal;
 
 // TESTS
+int test_s21_is_greater(int *total_tests_count);
+int test_s21_bank_round(int *total_tests_count);
+int test_s21_is_greater_or_equal(int *total_tests_count);
+int test_s21_is_equal(int *total_tests_count);
 int test_s21_add(int *total_tests_count);
 int test_s21_sub(int *total_tests_count);
 int test_s21_div(int *total_tests_count);

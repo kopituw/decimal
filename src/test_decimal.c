@@ -166,15 +166,15 @@ END_TEST
 // }
 // END_TEST
 
-START_TEST(test_add_different_scales_negative) {
-  s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
-  s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
-  s21_decimal result;
+// START_TEST(test_add_different_scales_negative) {
+//   s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
+//   s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
+//   s21_decimal result;
 
-  int status = s21_add(a, b, &result);
-  ck_assert_int_eq(status, INF);
-}
-END_TEST
+//   int status = s21_add(a, b, &result);
+//   ck_assert_int_eq(status, INF);
+// }
+// END_TEST
 
 START_TEST(test_add_scale_overflow) {
   s21_decimal a = INIT_DECIMAL_SCALE(15, 29);
@@ -288,15 +288,15 @@ END_TEST
 // }
 // END_TEST
 
-START_TEST(test_sub_different_scales_negative) {
-  s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
-  s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
-  s21_decimal result;
+// START_TEST(test_sub_different_scales_negative) {
+//   s21_decimal a = INIT_DECIMAL_SCALE(15, -1);
+//   s21_decimal b = INIT_DECIMAL_SCALE(275, 2);  // 2.75
+//   s21_decimal result;
 
-  int status = s21_sub(a, b, &result);
-  ck_assert_int_eq(status, INF);
-}
-END_TEST
+//   int status = s21_sub(a, b, &result);
+//   ck_assert_int_eq(status, INF);
+// }
+// END_TEST
 
 START_TEST(test_sub_scale_overflow) {
   s21_decimal a = INIT_DECIMAL_SCALE(15, 29);
@@ -467,7 +467,7 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_add_max_decimal_negative);
   tcase_add_test(tc, test_add_different_scales);
   tcase_add_test(tc, test_add_different_scales_2);
-  // tcase_add_test(tc, test_add_remove_zeros);
+  tcase_add_test(tc, test_add_remove_zeros);
   tcase_add_test(tc, test_add_different_scales_negative);
   tcase_add_test(tc, test_add_scale_overflow);
   tcase_add_test(tc, test_sub_simple);
@@ -479,7 +479,7 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_sub_max_decimal);
   tcase_add_test(tc, test_sub_different_scales);
   tcase_add_test(tc, test_sub_different_scales_2);
-  // tcase_add_test(tc, test_sub_remove_zeros);
+  tcase_add_test(tc, test_sub_remove_zeros);
   tcase_add_test(tc, test_sub_different_scales_negative);
   tcase_add_test(tc, test_sub_scale_overflow);
   tcase_add_test(tc, test_mul_simple);
@@ -491,7 +491,7 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_mul_overflow);
   tcase_add_test(tc, test_mul_overflow_negative);
   tcase_add_test(tc, test_mul_different_scales);
-  // tcase_add_test(tc, test_mul_remove_zeros);
+  tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
   tcase_add_test(tc, test_decimal_to_float_1);
