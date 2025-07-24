@@ -50,26 +50,26 @@ void bank_round(s21_decimal *dec, unsigned count) {
   set_scale(dec, scale - count);
 }
 
-void big_bank_round(s21_big_decimal *value, unsigned count) {
-  if (!value || big_is_zero(*value)) return;
-  for (unsigned i = 0; i < count; i++) {
-    s21_big_decimal quotient = {0};
-    int remainder = big_div10(value, &quotient);
-    // Bankers rounding
-    if (remainder > 5) {
-      s21_big_decimal one = {0};
-      one.b_bit[0] = 1;
-      s21_big_add(quotient, one, &quotient);
-    } else if (remainder == 5) {
-      if (quotient.b_bit[0] & 1) {
-        s21_big_decimal one = {0};
-        one.b_bit[0] = 1;
-        s21_big_add(quotient, one, &quotient);
-      }
-    }
-    *value = quotient;
-  }
-}
+// void big_bank_round(s21_big_decimal *value, unsigned count) {
+//   if (!value || big_is_zero(*value)) return;
+//   for (unsigned i = 0; i < count; i++) {
+//     s21_big_decimal quotient = {0};
+//     int remainder = big_div10(value, &quotient);
+//     // Bankers rounding
+//     if (remainder > 5) {
+//       s21_big_decimal one = {0};
+//       one.b_bit[0] = 1;
+//       s21_big_add(quotient, one, &quotient);
+//     } else if (remainder == 5) {
+//       if (quotient.b_bit[0] & 1) {
+//         s21_big_decimal one = {0};
+//         one.b_bit[0] = 1;
+//         s21_big_add(quotient, one, &quotient);
+//       }
+//     }
+//     *value = quotient;
+//   }
+// }
 
 // #include "../s21_decimal.h"
 
