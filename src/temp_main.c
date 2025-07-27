@@ -13,9 +13,9 @@ int main(void)
   // test_s21_is_greater(&total_tests_count);
   // test_s21_is_equal(&total_tests_count);
   // test_s21_is_greater_or_equal(&total_tests_count);
-  // failed_tests_count += test_s21_add(&total_tests_count);
+  failed_tests_count += test_s21_add(&total_tests_count);
   // failed_tests_count += test_s21_sub(&total_tests_count);
-  failed_tests_count += test_s21_mul(&total_tests_count);
+  // failed_tests_count += test_s21_mul(&total_tests_count);
   // failed_tests_count += test_s21_div(&total_tests_count);
   // failed_tests_count += test_s21_normalize(&total_tests_count);
   // failed_tests_count += test_s21_bank_round(&total_tests_count);
@@ -215,25 +215,27 @@ int test_s21_add(int *total_tests_count)
     printf("TEST #%d PASSED!\n", *total_tests_count);
   }
 
-  // a = (s21_decimal){{15, 0, 0, 0}};
-  // set_scale(&a, 29);
-  // a = (s21_decimal){{275, 0, 0, 0}};
-  // set_scale(&b, 2);
+  printf("===========\n");
+  a = (s21_decimal){{15, 0, 0, 0}};
+  set_scale(&a, -1);
+  b = (s21_decimal){{275, 0, 0, 0}};
+  set_scale(&b, 2);
 
-  // print_decimal(a);
+  print_decimal(a);
+  printf("scale -1 %d\n", get_scale(&a));
 
-  // status = s21_add(a, b, &result);
+  status = s21_add(a, b, &result);
 
-  // if (status != CONVERSION_ERROR)
-  // {
-  //   failed_tests_count++;
-  //   printf("TEST #%d FAILED!\n", *total_tests_count);
-  //   printf(" my_res: %d\nexp_res: %d\n", status, CONVERSION_ERROR);
-  // }
-  // else
-  // {
-  //   printf("TEST #%d PASSED!\n", *total_tests_count);
-  // }
+  if (status != NEGATIVE_INF)
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+    printf(" my_res: %d\nexp_res: %d\n", status, NEGATIVE_INF);
+  }
+  else
+  {
+    printf("TEST #%d PASSED!\n", *total_tests_count);
+  }
 
   return failed_tests_count;
 }
@@ -342,6 +344,7 @@ int test_s21_sub(int *total_tests_count)
   {
     printf("TEST #%d PASSED!\n", *total_tests_count);
   }
+  printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
 
   a = (s21_decimal){{999999, 0, 0, 0}}; // 999.999
   set_scale(&a, 3);
@@ -377,6 +380,7 @@ int test_s21_sub(int *total_tests_count)
   a = (s21_decimal){{100000, 0, 0, 0}};
   set_scale(&a, 3);
 
+  printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
   if (s21_is_equal(result, a))
   {
     failed_tests_count++;

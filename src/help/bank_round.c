@@ -29,6 +29,32 @@ int big_div10(const s21_big_decimal *value, s21_big_decimal *quotient)
   return (int)rem;
 }
 
+int bank_round(s21_decimal *dec, unsigned count)
+{
+  int system_bit = dec->bit[3];
+  int exp = get_scale(dec) - count;
+  while (count > 0 && count < 96)
+  {
+    s21_decimal base = {10, 0, 0, 0}, one = {1, 0, 0, 0}, two = {2, 0, 0, 0}, two_res = {0};
+    s21_decimal dec_mod = {0};
+    s21_div(*dec, base, &dec_mod);
+    printf("! %u\n", dec_mod.bit[0]);
+    if (dec_mod.bit[0] > 5)
+    {
+      denya_add_basic(*dec, one, dec);
+    }
+    else if (dec_mod.bit[0] == 5)
+    {
+      s21_div(*dec, two, &two_res);
+      if (s21_is_equal(one, two_res))
+        denya_add_basic(*dec, one, dec);
+    }
+    count--;
+  }
+  dec->bit[3] = system_bit;
+  set_scale(dec, exp);
+}
+
 void bank_round(s21_decimal *dec, unsigned count)
 {
   if (!dec || is_zero(*dec))

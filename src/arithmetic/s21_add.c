@@ -34,7 +34,7 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
       sign_2 = get_sign(&dec_2), scale = get_scale(&dec_1);
 
   printf("\nhuy: %d\n", overflow);
-  if (sign_1 ^ sign_2 && !overflow)
+  if (sign_1 ^ sign_2 && overflow == OK)
   {
     if (s21_is_greater_or_equal_modal(dec_1, dec_2))
     {
@@ -50,7 +50,7 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
         set_sign(result, sign_2);
     }
   }
-  else if (!overflow)
+  else if (overflow == OK)
   {
     overflow = denya_add_basic(dec_1, dec_2, result);
 
@@ -60,7 +60,7 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
       overflow = NEGATIVE_INF;
   }
 
-  if (overflow != OK && get_scale(&dec_1))
+  if (overflow != OK && scale)
   {
     bank_round(&dec_1, 1);
     bank_round(&dec_2, 1);

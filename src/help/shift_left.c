@@ -17,7 +17,7 @@ int shift_left_offset(s21_decimal *dec, int offset)
   {
     overflow = shift_left(dec);
   }
-  printf("ovrflw from shift = %d\n", overflow);
+  // printf("ovrflw from shift = %d\n", overflow);
   return overflow;
 }
 
