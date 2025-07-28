@@ -623,6 +623,106 @@ START_TEST(test_is_greater_or_equal_9) {
 }
 END_TEST
 
+START_TEST(test_is_greater_1) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x0}}; // 0
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}}; // 0
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_greater_2) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}}; // max
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}}; // min
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_greater_3) {
+  s21_decimal a = {{0x019C74F5, 0x62CB33F9, 0x1, 0x0}};  // 25565584854.265656565
+  s21_decimal b = {{0x3, 0x0, 0x0, 0x80000000}}; // 3
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_greater_4) {
+  s21_decimal a = {{0x1708, 0x0, 0x0, 0x80000000}}; //-5896
+  s21_decimal b = {{0x1EC4, 0x0, 0x0, 0x80000000}}; //-7876
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_greater_5) {
+  s21_decimal a = {{0x80, 0x0, 0x0, 0x0}}; // 10000000
+  s21_decimal b = {{0x40, 0x0, 0x0, 0x0}}; // 1000000
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_greater_6) {
+  s21_decimal a = {{0xF, 0x0, 0x0, 0x80020000}}; // -0.15
+  s21_decimal b = {{0x3C5AFE, 0x0, 0x0, 0x0}};  // 3955454
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_greater_7) {
+  s21_decimal a = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}}; //-7896452314745.56984
+  s21_decimal b = {{0x809F4038, 0xAF56227, 0x0, 0x80060000}};  //-789645231474.556984
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_greater_8) {
+  s21_decimal a = {{0xA, 0x0, 0x0, 0x0}}; // 10
+  s21_decimal b = {{0x65, 0x0, 0x0, 0x10000}}; // 10.1
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_greater_9) {
+  s21_decimal a = {{0xB, 0x0, 0x0, 0x20000}}; // 0.11
+  s21_decimal b = {{0x1, 0x0, 0x0, 0x10000}}; // 0.1
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_greater_10) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x0}}; // 0
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x80000000}}; // -0
+
+  int status = s21_is_greater(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
 START_TEST(test_decimal_to_float_1) {
   s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
   float res = 0.0f;
@@ -743,6 +843,16 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_is_greater_or_equal_7);
   tcase_add_test(tc, test_is_greater_or_equal_8);
   tcase_add_test(tc, test_is_greater_or_equal_9);
+  tcase_add_test(tc, test_is_greater_1);
+  tcase_add_test(tc, test_is_greater_2);
+  tcase_add_test(tc, test_is_greater_3);
+  tcase_add_test(tc, test_is_greater_4);
+  tcase_add_test(tc, test_is_greater_5);
+  tcase_add_test(tc, test_is_greater_6);
+  tcase_add_test(tc, test_is_greater_7);
+  tcase_add_test(tc, test_is_greater_8);
+  tcase_add_test(tc, test_is_greater_9);
+  tcase_add_test(tc, test_is_greater_10);
   tcase_add_test(tc, test_decimal_to_float_1);
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);
