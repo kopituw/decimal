@@ -433,6 +433,106 @@ START_TEST(test_div_simple) {
 }
 END_TEST
 
+START_TEST(test_is_equal_1) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x0}};
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}};
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_2) {
+  s21_decimal a = {{0x1F018BE6, 0x1, 0x0, 0x40000}};
+  s21_decimal b = {{0x1F018BE6, 0x1, 0x0, 0x40000}};  // 481516.2342
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_3) {
+  s21_decimal a = {{0xF282E200, 0x95AE8703, 0xE70A1, 0x801B0000}};
+  s21_decimal b = {{0xF282E200, 0x95AE8703, 0xE70A1, 0x801B0000}};  //-0.17456847232188684569862656
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_4) {
+  s21_decimal a = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}};
+  s21_decimal b = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}};  //-1.0000000000000000000008
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_5) {
+  s21_decimal a = {{0x6FEC01F2, 0xAB44DF0C, 0x0, 0x80080000}};
+  s21_decimal b = {{0x6FEC01F2, 0xAB44DF0C, 0x0, 0x80080000}};  // -123412341234.12341234
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_6) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}};
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}}; // max
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_7) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x80000000}}; // -0
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}}; // 0
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_equal_8) {
+  s21_decimal a =  {{0xA, 0x0, 0x0, 0x0}}; // 10
+  s21_decimal b = {{0x65, 0x0, 0x0, 0x10000}}; // 10.1
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_equal_9) {
+  s21_decimal a =  {{0x809F4038, 0xAF56227, 0x0, 0x80050000}}; // -7896452314745.56984
+  s21_decimal b = {{0x809F4038, 0xAF56227, 0x0, 0x80060000}}; // -789645231474.556984
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_equal_10) {
+  s21_decimal a = {{0xB2400007, 0x19E0C9BA, 0x21E, 0x80160000}}; //-1.0000000000000000000007
+  s21_decimal b = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}}; //-1.0000000000000000000008
+
+  int status = s21_is_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
 START_TEST(test_decimal_to_float_1) {
   s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
   float res = 0.0f;
@@ -534,6 +634,16 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   // tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
+  tcase_add_test(tc, test_is_equal_1);
+  tcase_add_test(tc, test_is_equal_2);
+  tcase_add_test(tc, test_is_equal_3);
+  tcase_add_test(tc, test_is_equal_4);
+  tcase_add_test(tc, test_is_equal_5);
+  tcase_add_test(tc, test_is_equal_6);
+  tcase_add_test(tc, test_is_equal_7);
+  tcase_add_test(tc, test_is_equal_8);
+  tcase_add_test(tc, test_is_equal_9);
+  tcase_add_test(tc, test_is_equal_10);
   tcase_add_test(tc, test_decimal_to_float_1);
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);
