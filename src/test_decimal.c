@@ -723,6 +723,76 @@ START_TEST(test_is_greater_10) {
 }
 END_TEST
 
+START_TEST(test_is_less_or_equal_1) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x0}}; // 0
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}}; // 0
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_2) {
+  s21_decimal a = {{0x6FEC01F2, 0xAB44DF0C, 0x0, 0x80080000}}; //-123412341234.12341234
+  s21_decimal b = {{0x6FEC01F2, 0xAB44DF0C, 0x0, 0x80080000}}; //-123412341234.12341234
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_3) {
+  s21_decimal a = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}}; //-7896452314745.56984
+  s21_decimal b = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}}; //-7896452314745.56984
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_4) {
+  s21_decimal a =  {{0xF, 0x0, 0x0, 0x80020000}}; //-0.15
+  s21_decimal b = {{0x3C5AFE, 0x0, 0x0, 0x0}}; // 3955454
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_5) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}}; // max
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}}; // min
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_6) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}}; // min
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}}; // max
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_less_or_equal_7) {
+  s21_decimal a = {{0xB2400007, 0x19E0C9BA, 0x21E, 0x80160000}}; //-1.0000000000000000000007
+  s21_decimal b = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}}; //-1.0000000000000000000008
+
+  int status = s21_is_less_or_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
 START_TEST(test_decimal_to_float_1) {
   s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
   float res = 0.0f;
@@ -853,6 +923,13 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_is_greater_8);
   tcase_add_test(tc, test_is_greater_9);
   tcase_add_test(tc, test_is_greater_10);
+  tcase_add_test(tc, test_is_less_or_equal_1);
+  tcase_add_test(tc, test_is_less_or_equal_2);
+  tcase_add_test(tc, test_is_less_or_equal_3);
+  tcase_add_test(tc, test_is_less_or_equal_4);
+  tcase_add_test(tc, test_is_less_or_equal_5);
+  tcase_add_test(tc, test_is_less_or_equal_6);
+  tcase_add_test(tc, test_is_less_or_equal_7);
   tcase_add_test(tc, test_decimal_to_float_1);
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);
