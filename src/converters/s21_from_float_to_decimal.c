@@ -3,23 +3,52 @@
 const double MAX_DECIMAL = 79228162514264337593543950335.0L;
 
 int float_sign(float f) {
-	uint32_t bitsss;
-	memcry (&bitsss, &f, sizeof(bitsss));
-	return (bitsss >> 31) & 1;
+	uint32_t bits_sign;
+	memcpy (&bits_sign, &f, sizeof(bits_sign));
+	return (bits_sign >> 31) & 1;
+}
+
+int float_exponenta(float f){
+	uint32_t bits_mantissa;
+	memcpy (&bits_mantissa, &f, sizeof(bits_mantissa));
+	return(bits_mantissa >> 23) & 0xFF;
+
+}
+
+int float_mantissa(float f) {
+	uint32_t bits_exponenta;
+	memcpy (&bits_exponenta, &f, sizeof(bits_exponenta));
+	return bits_exponenta & 0x7FFFFF;
+
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
-	if (dst == NULL)
+	if (dst == NULL || src != src || src == INFINITY || src == -INFINITY)
 	return CONVERTING_ERROR;
 
 	null_decimal(dst);
 
-	if (src == 0.0f) { // вот эта все неправльна так не будет работать говножопа очко писькососы!!!!!!!!
-		set_sign(dst, 0); 
+	if (src == 0.0f) { 
+		int float_sign_get = float_sign(src);
+		set_sign(dst, float_sign_get);
 		return OK;
 	}
-	if (src == -0.0f) {
-		set_sign(dst, 1);
-		return OK; 
+	int sign = float_sign(src);
+	int exponenta = float_exponenta(src);
+	int mantissa = float_mantissa(src);
+
+	uint64_t mantissa64 = (uint64_t)mantissa;
+	if (exponenta != 0) { // для нормализованн чисел нет ведущей едтницы
+		mantissa64 |= ((uint64_t)1 << 23);
+	else  if (mantissa64 == 0){
+		set_sign(dst, sign)
+		return OK;
+		// експ == 0 мантисса ==0 то есть число ноль
+	} else {
+		// денормал число експ == 0 , но мантисса не ноль
 	}
-}
+	
+	}
+
+		
+	}
