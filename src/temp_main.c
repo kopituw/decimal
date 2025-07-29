@@ -19,6 +19,15 @@ int main(void)
   // failed_tests_count += test_s21_div(&total_tests_count);
   // failed_tests_count += test_s21_normalize(&total_tests_count);
   // failed_tests_count += test_s21_bank_round(&total_tests_count);
+  s21_decimal kek = {{1230000, 0, 0, 0}};
+  set_scale(&kek, 2);
+  // s21_decimal ten = {{10, 0, 0, 0}};
+  // s21_decimal result = {0};
+  // s21_remain(kek, (s21_decimal){{10, 0, 0, 0}}, &result);
+  // print_decimal(result);
+  // printf("res = %u.%u.%u\n", result.bit[0], result.bit[1], result.bit[2]);
+
+  remove_zeros(&kek);
 
   printf("\n\n%.2f%% of %d tests passed\n\n",
          100 - ((double)failed_tests_count * 100 / (double)total_tests_count),
@@ -45,8 +54,8 @@ int main(void)
 int test_s21_normalize(int *total_tests_count)
 {
   int failed_tests_count = 0;
-  int values_a[4] = {1, 5, 8, 26};
-  int values_b[4] = {1, 5, 8, 26};
+  int values_a[5] = {0, 1, 5, 8, 26};
+  int values_b[5] = {0, 1, 5, 8, 26};
 
   for (int i = 0; i < 4; i++)
   {

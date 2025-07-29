@@ -4,8 +4,6 @@ int normalize(s21_decimal *dec1, s21_decimal *dec2)
 {
   int scale1 = get_scale(dec1), scale2 = get_scale(dec2);
 
-  printf("\nscales: %d %d\n", scale1, scale2);
-
   if (scale1 >= 28 || scale2 >= 28)
     return INF;
 

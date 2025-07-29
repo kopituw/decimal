@@ -114,8 +114,8 @@ int normalize(s21_decimal *dec1, s21_decimal *dec2);
 int big_normalize(s21_decimal value1, s21_decimal value2,
                   s21_big_decimal *big_value1, s21_big_decimal *big_value2,
                   int *scale);
-// void bank_round(s21_decimal *dec, unsigned count);
-int bank_round(s21_decimal *dec, unsigned count);
+void bank_round(s21_decimal *dec, unsigned count);
+// int bank_round(s21_decimal *dec, unsigned count);
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);
 int correct_last_bits(s21_decimal value);

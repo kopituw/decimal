@@ -33,7 +33,12 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),
       sign_2 = get_sign(&dec_2), scale = get_scale(&dec_1);
 
-  printf("\nhuy: %d\n", overflow);
+  if (scale < 0)
+  {
+
+    printf("\n\n!===========! status = %d !===========!\n", overflow);
+  }
+
   if (sign_1 ^ sign_2 && overflow == OK)
   {
     if (s21_is_greater_or_equal_modal(dec_1, dec_2))
@@ -60,7 +65,7 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
       overflow = NEGATIVE_INF;
   }
 
-  if (overflow != OK && scale)
+  if (overflow != OK && scale > 0)
   {
     bank_round(&dec_1, 1);
     bank_round(&dec_2, 1);
