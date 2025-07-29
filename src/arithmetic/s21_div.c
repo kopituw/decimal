@@ -49,12 +49,13 @@ int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 {
 
   int overflow = OK;
-  s21_div(value_1, value_2, result);
+  overflow = s21_div(value_1, value_2, result);
   // s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
-  s21_mul(*result, value_2, result);
+  if (overflow == OK)
+    overflow = s21_mul(*result, value_2, result);
   // set_scale(&tmp, get_scale(&value_1));
-
-  s21_sub(value_1, *result, result);
+  if (overflow == OK)
+    overflow = s21_sub(value_1, *result, result);
   // printf("scl1 = %d scl2 = %d\n", get_scale(&value_1), get_scale(result));
   // // s21_add(value_1, *result, result);
   // printf("value_1 is %u.%u.%u with %d\n", value_1.bit[0], value_1.bit[1], value_1.bit[2], get_scale(&value_1));
