@@ -53,6 +53,7 @@ void bank_round(s21_decimal *dec, unsigned count)
   }
   dec->bit[3] = system_bit;
   set_scale(dec, exp);
+  remove_zeros(dec);
 }
 
 // void bank_round(s21_decimal *dec, unsigned count)
@@ -91,8 +92,8 @@ void remove_zeros(s21_decimal *value)
 {
   // printf("========================\nit was: %u.%u.%u\n", value->bit[0], value->bit[1], value->bit[2]);
 
-  printf("in %u.%u.%u ", value->bit[0], value->bit[1], value->bit[2]);
-  printf("with scale of %d ", get_scale(value));
+  // printf("in %u.%u.%u ", value->bit[0], value->bit[1], value->bit[2]);
+  // printf("with scale of %d ", get_scale(value));
   s21_decimal ostatok = {{0, 0, 0, 0}};
   int tmp_scale = get_scale(value);
 
@@ -104,7 +105,7 @@ void remove_zeros(s21_decimal *value)
     s21_div(*value, (s21_decimal){{10, 0, 0, 0}}, value);
   }
   // printf("%d zeros deleted\n", temp_counter);
-  printf("zeros removed = %u.%u.%u\n", value->bit[0], value->bit[1], value->bit[2]);
+  // printf("zeros removed = %u.%u.%u\n", value->bit[0], value->bit[1], value->bit[2]);
 }
 
 // void big_bank_round(s21_big_decimal *value, unsigned count) {

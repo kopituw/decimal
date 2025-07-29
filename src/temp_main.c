@@ -10,15 +10,15 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
   int total_tests_count = 0, failed_tests_count = 0;
-  // test_s21_is_greater(&total_tests_count);
-  // test_s21_is_equal(&total_tests_count);
-  // test_s21_is_greater_or_equal(&total_tests_count);
+  test_s21_is_greater(&total_tests_count);
+  test_s21_is_equal(&total_tests_count);
+  test_s21_is_greater_or_equal(&total_tests_count);
   failed_tests_count += test_s21_add(&total_tests_count);
-  // failed_tests_count += test_s21_sub(&total_tests_count);
-  // failed_tests_count += test_s21_mul(&total_tests_count);
-  // failed_tests_count += test_s21_div(&total_tests_count);
-  // failed_tests_count += test_s21_normalize(&total_tests_count);
-  // failed_tests_count += test_s21_bank_round(&total_tests_count);
+  failed_tests_count += test_s21_sub(&total_tests_count);
+  failed_tests_count += test_s21_mul(&total_tests_count);
+  failed_tests_count += test_s21_div(&total_tests_count);
+  failed_tests_count += test_s21_normalize(&total_tests_count);
+  failed_tests_count += test_s21_bank_round(&total_tests_count);
   s21_decimal kek = {{1230000, 0, 0, 0}};
   set_scale(&kek, 2);
   // s21_decimal ten = {{10, 0, 0, 0}};
@@ -224,14 +224,14 @@ int test_s21_add(int *total_tests_count)
     printf("TEST #%d PASSED!\n", *total_tests_count);
   }
 
-  printf("===========\n");
+  // printf("===========\n");
   a = (s21_decimal){{15, 0, 0, 0}};
   set_scale(&a, -1);
   b = (s21_decimal){{275, 0, 0, 0}};
   set_scale(&b, 2);
 
-  print_decimal(a);
-  printf("scale -1 %d\n", get_scale(&a));
+  // print_decimal(a);
+  // printf("scale -1 %d\n", get_scale(&a));
 
   status = s21_add(a, b, &result);
 
