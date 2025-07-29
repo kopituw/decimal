@@ -21,11 +21,14 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
 
   s21_decimal temp;
   init_decimal(&temp);
-  int overflow = 0;
+  int overflow = get_scale(&a) > 28 || get_scale(&b) > 28 ? INF : OK;
+  if (overflow == OK)
+    overflow = get_scale(&a) < 0 || get_scale(&b) < 0 ? NEGATIVE_INF : OK;
+
   int sign1 = get_sign(&a);
   int sign2 = get_sign(&b);
 
-  for (int i = 0; i < 96 && !overflow; i++)
+  for (int i = 0; i < 96 && overflow == OK; i++)
   {
     if (get_bit(a, i))
     {
@@ -36,7 +39,7 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
         overflow = denya_add_basic(tmp, temp, &temp);
     }
   }
-  if (!overflow)
+  if (overflow == OK)
     *c = temp;
 
   if (c->bit[0])
