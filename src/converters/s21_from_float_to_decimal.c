@@ -8,23 +8,21 @@ int float_sign(float f) {
 	return (bits_sign >> 31) & 1;
 }
 
-int float_exponenta(float f){
-	uint32_t bits_mantissa;
-	memcpy (&bits_mantissa, &f, sizeof(bits_mantissa));
-	return(bits_mantissa >> 23) & 0xFF;
-
+int float_exponent(float f){
+	uint32_t bits_exponent;
+	memcpy (&bits_exponent, &f, sizeof(bits_exponent));
+	return (bits_exponent >> 23) & 0xFF;
 }
 
 int float_mantissa(float f) {
-	uint32_t bits_exponenta;
-	memcpy (&bits_exponenta, &f, sizeof(bits_exponenta));
-	return bits_exponenta & 0x7FFFFF;
-
+	uint32_t bits_mantissa;
+	memcpy (&bits_mantissa, &f, sizeof(bits_mantissa));
+	return bits_mantissa & 0x7FFFFF;
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 	if (dst == NULL || src != src || src == INFINITY || src == -INFINITY)
-	return CONVERTING_ERROR;
+		return CONVERTING_ERROR;
 
 	null_decimal(dst);
 
@@ -33,22 +31,27 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 		set_sign(dst, float_sign_get);
 		return OK;
 	}
+	
 	int sign = float_sign(src);
-	int exponenta = float_exponenta(src);
+	int exponent = float_exponent(src);
 	int mantissa = float_mantissa(src);
 
 	uint64_t mantissa64 = (uint64_t)mantissa;
-	if (exponenta != 0) { // для нормализованн чисел нет ведущей едтницы
+	if (exponent != 0) { // для нормализованн чисел нет ведущей едтницы
 		mantissa64 |= ((uint64_t)1 << 23);
-	else  if (mantissa64 == 0){
-		set_sign(dst, sign)
+	} else  if (mantissa64 == 0){
+		set_sign(dst, sign);
 		return OK;
-		// експ == 0 мантисса ==0 то есть число ноль
+		// експ == 0 мантисса == 0 то есть число ноль
 	} else {
-		// денормал число експ == 0 , но мантисса не ноль
-	}
-	
-	}
-
+		int real_exponent = -126;
+		mantissa64 >>= (-real_exponent);
+		if (mantissa64 > MAX_DECIMAL) {
+			return CONVERTING_ERROR;
+		}
 		
 	}
+}
+
+		
+	
