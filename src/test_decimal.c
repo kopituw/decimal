@@ -903,6 +903,107 @@ START_TEST(test_is_less_11) {
 }
 END_TEST
 
+START_TEST(test_is_not_equal_1) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x0}}; // 0
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}}; // 0
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_2) {
+  s21_decimal a = {{0x4C4B601, 0x0, 0x0, 0x80000000}}; //-80000513
+  s21_decimal b = {{0x11, 0x0, 0x0, 0x80000000}}; //-17
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_3) {
+  s21_decimal a = {{0x76ADF1, 0x0, 0x0, 0x60000}}; // 7.77777
+  s21_decimal b = {{0x019C74F5, 0x62CB33F9, 0x1, 0x0}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_4) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}}; // min
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}}; // max
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_5) {
+  s21_decimal a = {{0xB2400007, 0x19E0C9BA, 0x21E, 0x80160000}};
+  s21_decimal b = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_6) {
+  s21_decimal a = {{0xB, 0x0, 0x0, 0x20000}};
+  s21_decimal b =  {{0x1, 0x0, 0x0, 0x10000}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_7) {
+  s21_decimal a = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}};
+  s21_decimal b = {{0x809F4038, 0xAF56227, 0x0, 0x80060000}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_8) {
+  s21_decimal a = {{0xA, 0x0, 0x0, 0x0}};
+  s21_decimal b = {{0x65, 0x0, 0x0, 0x10000}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 1);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_9) {
+  s21_decimal a = {{0x0, 0x0, 0x0, 0x80000000}};
+  s21_decimal b = {{0x0, 0x0, 0x0, 0x0}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+START_TEST(test_is_not_equal_10) {
+  s21_decimal a = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}};
+  s21_decimal b = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x0}};
+
+  int status = s21_is_not_equal(a, b);
+
+  ck_assert_int_eq(status, 0);
+}
+END_TEST
+
+
 START_TEST(test_decimal_to_float_1) {
   s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
   float res = 0.0f;
@@ -1051,6 +1152,16 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_is_less_9);
   tcase_add_test(tc, test_is_less_10);
   tcase_add_test(tc, test_is_less_11);
+  tcase_add_test(tc, test_is_not_equal_1);
+  tcase_add_test(tc, test_is_not_equal_2);
+  tcase_add_test(tc, test_is_not_equal_3);
+  tcase_add_test(tc, test_is_not_equal_4);
+  tcase_add_test(tc, test_is_not_equal_5);
+  tcase_add_test(tc, test_is_not_equal_6);
+  tcase_add_test(tc, test_is_not_equal_7);
+  tcase_add_test(tc, test_is_not_equal_8);
+  tcase_add_test(tc, test_is_not_equal_9);
+  tcase_add_test(tc, test_is_not_equal_10);
   tcase_add_test(tc, test_decimal_to_float_1);
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);

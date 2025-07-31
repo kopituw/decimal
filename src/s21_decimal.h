@@ -67,6 +67,10 @@ int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal value_1, s21_decimal value_2);
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
+// big decimal comparison functions
+int s21_big_is_equal(s21_big_decimal value1, s21_big_decimal value2);
+int s21_big_is_not_equal(s21_big_decimal value_1, s21_big_decimal value_2);
+
 // модальное сравнение
 int s21_is_less_modal(s21_decimal, s21_decimal);
 int s21_is_less_or_equal_modal(s21_decimal, s21_decimal);
