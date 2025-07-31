@@ -51,7 +51,6 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
     }
   }
   else if (overflow == OK)
-  else if (overflow == OK)
   {
     overflow = denya_add_basic(dec_1, dec_2, result);
 

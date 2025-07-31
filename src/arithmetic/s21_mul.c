@@ -47,7 +47,7 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
     set_sign(c, sign1 ^ sign2);
 
   if (overflow)
-    overflow = (sign1 ^ sign2) ? NEGATIVE_INF : INF;
+    overflow = INF;
 
   return overflow;
 }

@@ -49,10 +49,11 @@ s21_decimal INIT_DECIMAL_SCALE(int64_t value, int scale) {
 START_TEST(test_simple_add) {
   s21_decimal a = {{3, 0, 0, 0}};
   s21_decimal b = {{5, 0, 0, 0}};
+  s21_decimal expected = {{8, 0, 0, 0}};
   s21_decimal result;
 
   s21_add(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(8)), 1);
+  ck_assert_int_eq(s21_is_equal(result, expected), 1);
 }
 END_TEST
 
@@ -387,7 +388,7 @@ START_TEST(test_mul_overflow_negative) {
   s21_decimal result;
 
   int status = s21_mul(max, b, &result);
-  ck_assert_int_eq(status, NEGATIVE_INF);
+  ck_assert_int_eq(status, INF);
 }
 END_TEST
 
