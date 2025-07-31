@@ -25,20 +25,21 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2)
 int s21_is_greater(s21_decimal dec1, s21_decimal dec2)
 {
   int result = -1;
-  if (get_sign(&dec1) != get_sign(&dec2))
+  int sign1 = get_sign(&dec1);
+  if (sign1 != get_sign(&dec2))
   {
-    result = get_sign(&dec1) < get_sign(&dec2);
+    result = sign1 < get_sign(&dec2);
   }
-
+  printf("%d\n", result);
   if (get_scale(&dec1) != get_scale(&dec2))
   {
-    result = get_scale(&dec1) > get_scale(&dec2);
+    result = sign1 ? get_scale(&dec1) < get_scale(&dec2) : get_scale(&dec1) > get_scale(&dec2);
   }
 
   for (int i = 2; i >= 0 && result == -1; i--)
   {
     if (dec1.bit[i] != dec2.bit[i])
-      result = dec1.bit[i] > dec2.bit[i];
+      result = sign1 ? dec1.bit[i] < dec2.bit[i] : dec1.bit[i] > dec2.bit[i];
   }
   if (result == -1)
     result = 0;

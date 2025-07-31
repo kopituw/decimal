@@ -12,22 +12,22 @@ int main(void)
   int total_tests_count = 0, failed_tests_count = 0;
   // test_s21_is_greater(&total_tests_count);
   // test_s21_is_equal(&total_tests_count);
-  // test_s21_is_greater_or_equal(&total_tests_count);
-  failed_tests_count += test_s21_add(&total_tests_count);
+  test_s21_is_greater_or_equal(&total_tests_count);
+  // failed_tests_count += test_s21_add(&total_tests_count);
   // failed_tests_count += test_s21_sub(&total_tests_count);
   // failed_tests_count += test_s21_mul(&total_tests_count);
   // failed_tests_count += test_s21_div(&total_tests_count);
   // failed_tests_count += test_s21_normalize(&total_tests_count);
   // failed_tests_count += test_s21_bank_round(&total_tests_count);
-  s21_decimal kek = {{1230000, 0, 0, 0}};
-  set_scale(&kek, 2);
+  // s21_decimal kek = {{1230000, 0, 0, 0}};
+  // set_scale(&kek, 2);
   // s21_decimal ten = {{10, 0, 0, 0}};
   // s21_decimal result = {0};
   // s21_remain(kek, (s21_decimal){{10, 0, 0, 0}}, &result);
   // print_decimal(result);
   // printf("res = %u.%u.%u\n", result.bit[0], result.bit[1], result.bit[2]);
 
-  remove_zeros(&kek);
+  // remove_zeros(&kek);
 
   printf("\n\n%.2f%% of %d tests passed\n\n",
          100 - ((double)failed_tests_count * 100 / (double)total_tests_count),
@@ -243,7 +243,28 @@ int test_s21_add(int *total_tests_count)
   }
   else
   {
-    printf("TEST #%d PASSED!\n", *total_tests_count);
+    printf("TEST scale -1 #%d PASSED!\n", *total_tests_count);
+  }
+
+  a = (s21_decimal){{15, 0, 0, 0}};
+  set_scale(&a, 29);
+  b = (s21_decimal){{275, 0, 0, 0}};
+  set_scale(&b, 2);
+
+  print_decimal(a);
+  // printf("scale -1 %d\n", get_scale(&a));
+
+  status = s21_add(a, b, &result);
+
+  if (status != INF)
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+    printf(" my_res: %d\nexp_res: %d\n", status, INF);
+  }
+  else
+  {
+    printf("TEST scale 29 #%d PASSED!\n", *total_tests_count);
   }
 
   return failed_tests_count;
@@ -353,7 +374,7 @@ int test_s21_sub(int *total_tests_count)
   {
     printf("TEST #%d PASSED!\n", *total_tests_count);
   }
-  printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
+  // printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
 
   a = (s21_decimal){{999999, 0, 0, 0}}; // 999.999
   set_scale(&a, 3);
@@ -375,8 +396,7 @@ int test_s21_sub(int *total_tests_count)
   }
   else
   {
-
-    printf("TEST #%d PASSED!\n", *total_tests_count);
+    printf("TEST 999998 #%d PASSED!\n", *total_tests_count);
   }
 
   a = (s21_decimal){{200000, 0, 0, 0}}; // 999.999
@@ -389,7 +409,7 @@ int test_s21_sub(int *total_tests_count)
   a = (s21_decimal){{100000, 0, 0, 0}};
   set_scale(&a, 3);
 
-  printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
+  // printf("%s%u with scale of %d\n", get_sign(&result) ? "-" : "", result.bit[0], get_scale(&result));
   if (s21_is_equal(result, a))
   {
     failed_tests_count++;
@@ -398,6 +418,27 @@ int test_s21_sub(int *total_tests_count)
   else
   {
     printf("TEST #%d PASSED!\n", *total_tests_count);
+  }
+
+  a = (s21_decimal){{15, 0, 0, 0}};
+  set_scale(&a, 29);
+  b = (s21_decimal){{275, 0, 0, 0}};
+  set_scale(&b, 2);
+
+  print_decimal(a);
+  // printf("scale -1 %d\n", get_scale(&a));
+
+  status = s21_sub(a, b, &result);
+
+  if (status != INF)
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+    printf(" my_res: %d\nexp_res: %d\n", status, INF);
+  }
+  else
+  {
+    printf("TEST scale 29 #%d PASSED!\n", *total_tests_count);
   }
 
   return failed_tests_count;
@@ -472,9 +513,9 @@ int test_s21_mul(int *total_tests_count)
 
   max = (s21_decimal){{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
   // set_scale(&max, 28);
-  set_sign(&max, 1);
+  // set_sign(&max, 1);
   b = (s21_decimal){{2, 0, 0, 0}};
-  // set_sign(&b, 1);
+  set_sign(&b, 1);
   // set_scale(&b, 28);
   (*total_tests_count)++;
   status = s21_mul(max, b, &result);
@@ -596,13 +637,32 @@ int test_s21_is_greater_or_equal(int *total_tests_count)
              decs2[j].bit[0]);
     }
   }
+
+  s21_decimal a = {{0x1708, 0x0, 0x0, 0x80000000}}; //-5896
+  s21_decimal b = {{0x1EC4, 0x0, 0x0, 0x80000000}}; //-7876
+
+  if (!s21_is_greater_or_equal(a, b))
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+
+    printf("Result: %d%d%d < %d%d%d\n", a.bit[2], a.bit[1],
+           a.bit[0], b.bit[2], b.bit[1],
+           b.bit[0]);
+  }
+  else
+  {
+
+    printf("TEST #%d passed!\n", *total_tests_count);
+  }
+
   return failed_tests_count;
 }
 
 int test_s21_is_equal(int *total_tests_count)
 {
-  s21_decimal decs1[6] = {{{1, 0, 0, 0}}, {{0, 1, 0, 0}}, {{0, 0, 1, 0}}, {{1, 1, 0, 0}}, {{1, 0, 1, 0}}, {{1, 1, 1, 0}}};
-  s21_decimal decs2[6] = {{{1, 0, 0, 0}}, {{0, 1, 0, 0}}, {{0, 0, 1, 0}}, {{1, 1, 0, 0}}, {{1, 0, 1, 0}}, {{1, 1, 1, 0}}};
+  s21_decimal decs1[6] = {{{0, 0, 0, 0}}, {{1, 0, 0, 0}}, {{0, 1, 0, 0}}, {{0, 0, 1, 0}}, {{1, 1, 0, 0}}, {{1, 0, 1, 0}}, {{1, 1, 1, 0}}};
+  s21_decimal decs2[6] = {{{0, 0, 0, 0}}, {{1, 0, 0, 0}}, {{0, 1, 0, 0}}, {{0, 0, 1, 0}}, {{1, 1, 0, 0}}, {{1, 0, 1, 0}}, {{1, 1, 1, 0}}};
   int failed_tests_count = 0;
 
   for (int i = 0; i < 6; i++)
@@ -620,6 +680,37 @@ int test_s21_is_equal(int *total_tests_count)
              decs2[j].bit[0]);
     }
   }
+
+  for (int i = 0; i < 6; i++)
+  {
+    set_sign(&decs1[i], 1);
+    for (int j = 0; j < 6; j++)
+    {
+      (*total_tests_count)++;
+
+      char res[3] = "!=";
+      if (s21_is_equal(decs1[i], decs2[j]))
+        strcpy(res, "=");
+
+      printf("Result: %s%d%d%d %s %s%d%d%d\n", get_sign(&decs1[i]) ? "-" : "", decs1[i].bit[2], decs1[i].bit[1],
+             decs1[i].bit[0], res, get_sign(&decs2[j]) ? "-" : "", decs2[j].bit[2], decs2[j].bit[1],
+             decs2[j].bit[0]);
+    }
+  }
+  s21_decimal a = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}}; // -7896452314745.56984
+  s21_decimal b = {{0x809F4038, 0xAF56227, 0x0, 0x80060000}}; // -789645231474.556984
+
+  if (s21_is_equal(a, b))
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+  }
+  else
+  {
+
+    printf("TEST #%d passed!\n", *total_tests_count);
+  }
+
   return failed_tests_count;
 }
 

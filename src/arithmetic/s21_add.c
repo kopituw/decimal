@@ -59,7 +59,7 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
       overflow = NEGATIVE_INF;
   }
 
-  if (overflow != OK && scale > 0)
+  if (overflow != OK && scale > 0 && scale <= 28)
   {
     bank_round(&dec_1, 1);
     bank_round(&dec_2, 1);
