@@ -1,8 +1,5 @@
 #include "../s21_decimal.h"
 
-const double MAX_DECIMAL = 79228162514264337593543950335.0L;
-
-
 int s21_from_decimal_to_float(s21_decimal src, float *dst){
 	if (dst == NULL)
 	return CONVERTING_ERROR;

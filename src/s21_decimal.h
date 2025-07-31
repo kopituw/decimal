@@ -10,6 +10,7 @@
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
+#define MAX_DECIMAL 79228162514264337593543950335.0L
 
 // коды возвращаемых результатов
 enum returns {
