@@ -1007,10 +1007,41 @@ END_TEST
 START_TEST(test_decimal_to_float_1) {
   s21_decimal value = {{0xF, 0x0, 0x0, 0x10000}};
   float res = 0.0f;
+  float res = 0.0f;
   float expected = 1.5f;
 
   s21_from_decimal_to_float(value, &res);
   ck_assert_float_eq_tol(res, expected, 1e-6);
+}
+END_TEST
+
+START_TEST(test_decimal_to_float_2) {
+  s21_decimal value = INIT_DECIMAL_SCALE(1, 29);
+  float res = 0.0f;
+  int status;
+
+  status = s21_from_decimal_to_float(value, &res);
+  ck_assert_int_eq(status, CONVERTING_ERROR);
+}
+END_TEST
+
+START_TEST(test_decimal_to_float_3) {
+  s21_decimal value = INIT_DECIMAL_SCALE(376126397, 5);
+  float res = 0.0f;
+  float expected = 3761.26397;
+
+  s21_from_decimal_to_float(value, &res);
+  ck_assert_float_eq_tol(res, expected, 1e-6);
+}
+END_TEST
+
+START_TEST(test_decimal_to_float_4) {
+  s21_decimal value = INIT_DECIMAL_SCALE(12345678912345, 7);
+  float res = 0.0f;
+  float expected = 1234568.0f;
+
+  s21_from_decimal_to_float(value, &res);
+  ck_assert_float_eq(res, expected);
 }
 END_TEST
 
@@ -1064,6 +1095,16 @@ START_TEST(test_int_to_decimal_1) {
 }
 END_TEST
 
+START_TEST(test_int_to_decimal_1) {
+  int value = 2;
+  s21_decimal res = {{0, 0, 0 , 0}};
+  s21_decimal expected = {{2, 0, 0 , 0}};
+
+  s21_from_int_to_decimal(value, &res);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -1080,6 +1121,8 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_add_different_scales_2);
   // tcase_add_test(tc, test_add_remove_zeros);
   // tcase_add_test(tc, test_add_different_scales_negative);
+  // tcase_add_test(tc, test_add_remove_zeros);
+  // tcase_add_test(tc, test_add_different_scales_negative);
   tcase_add_test(tc, test_add_scale_overflow);
   tcase_add_test(tc, test_sub_simple);
   tcase_add_test(tc, test_sub_simple_negative_positive);
@@ -1092,6 +1135,8 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_sub_different_scales_2);
   // tcase_add_test(tc, test_sub_remove_zeros);
   // tcase_add_test(tc, test_sub_different_scales_negative);
+  // tcase_add_test(tc, test_sub_remove_zeros);
+  // tcase_add_test(tc, test_sub_different_scales_negative);
   tcase_add_test(tc, test_sub_scale_overflow);
   tcase_add_test(tc, test_mul_simple);
   tcase_add_test(tc, test_mul_simple_negative);
@@ -1102,6 +1147,7 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_mul_overflow);
   tcase_add_test(tc, test_mul_overflow_negative);
   tcase_add_test(tc, test_mul_different_scales);
+  // tcase_add_test(tc, test_mul_remove_zeros);
   // tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
@@ -1166,7 +1212,11 @@ tcase_add_test(tc, test_simple_add_zeroo_positive);
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);
   tcase_add_test(tc, test_decimal_to_float_4);
+  tcase_add_test(tc, test_decimal_to_float_2);
+  tcase_add_test(tc, test_decimal_to_float_3);
+  tcase_add_test(tc, test_decimal_to_float_4);
   tcase_add_test(tc, test_decimal_to_int_1);
+  tcase_add_test(tc, test_int_to_decimal_1);
   tcase_add_test(tc, test_int_to_decimal_1);
   suite_add_tcase(s, tc);
   return s;

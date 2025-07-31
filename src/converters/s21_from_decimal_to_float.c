@@ -52,9 +52,9 @@ int s21_from_decimal_to_float(s21_decimal src, float *dst){
 			long double abs_res = fabsl(res);
 			if (abs_res != 0.0L) {
 				char buf[64];
-				snprintf(buf, sizeof(buf), "%.7g", (double)res);
+				snprintf(buf, sizeof(buf), "%.7g", (double)res); //stdio str witn b.max
 				double rounded = strtod(buf, NULL);
-				if (sign) rounded = -rounded;
+				if (sign) rounded = -rounded; // from str to double stdlib
 				*dst = (float)rounded;
 			}
 
