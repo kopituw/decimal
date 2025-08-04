@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
