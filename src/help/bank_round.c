@@ -1,7 +1,5 @@
 #include "../s21_decimal.h"
 
-// Прототип функции remove_zeros
-void remove_zeros(s21_decimal *value);
 
 // Делит value на 10, кладёт результат в quotient, остаток возвращает
 int div10(const s21_decimal *value, s21_decimal *quotient)

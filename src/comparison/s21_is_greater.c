@@ -18,39 +18,31 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
   return result;
 }
 
+// 
+
+
 int s21_is_greater(s21_decimal dec1, s21_decimal dec2) {
-  int flag = 0;
-  
-  // Проверяем случай с нулями
-  if (is_zero(dec1) && is_zero(dec2)) {
-    flag = 0; // 0 не больше -0
-  } else {
-    // Если знаки разные
+    // Обработка нулей
+    if (is_zero(dec1) && is_zero(dec2)) return 0;
+    
     int sign1 = get_sign(&dec1);
     int sign2 = get_sign(&dec2);
     
+    // Если знаки разные
     if (sign1 != sign2) {
-      flag = sign1 < sign2; // Положительное больше отрицательного
-    } else {
-      // Простое сравнение по битам
-      int result = -1;
-      for (int i = 2; i >= 0 && result == -1; i--) {
-        if (dec1.bit[i] != dec2.bit[i]) {
-          result = dec1.bit[i] > dec2.bit[i];
-        }
-      }
-      if (result == -1) result = 0;
-      
-      // Если числа отрицательные, инвертируем результат
-      if (sign1) {
-        result = !result;
-      }
-      
-      flag = result;
+        return sign2; // Положительное > отрицательного
     }
-  }
-  
-  return flag;
+    
+    // Нормализация для ненулевых чисел
+    if (!is_zero(dec1) && !is_zero(dec2)) {
+        normalize(&dec1, &dec2);
+    }
+    
+    // Сравнение по модулю
+    int abs_cmp = s21_is_greater_modal(dec1, dec2);
+    
+    // Инвертируем результат для отрицательных чисел
+    return sign1 ? !abs_cmp : abs_cmp;
 }
 
 int s21_is_greater_modal(s21_decimal dec1, s21_decimal dec2) {

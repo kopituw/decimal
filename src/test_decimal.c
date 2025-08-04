@@ -153,7 +153,7 @@ START_TEST(test_add_different_scales_2) {
   s21_decimal result;
 
   s21_add(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL_SCALE(1000, 0)), 1);
+  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL_SCALE(1000000, 3)), 1);
 }
 END_TEST
 
@@ -270,14 +270,20 @@ START_TEST(test_sub_different_scales) {
 END_TEST
 
 START_TEST(test_sub_different_scales_2) {
-  s21_decimal a = INIT_DECIMAL_SCALE(999999, 3);  // 999.999
-  s21_decimal b = INIT_DECIMAL_SCALE(1, 3);       // 0.001
-  s21_decimal result;
-
-  s21_sub(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL_SCALE(999.998, 3)), 1);
+    s21_decimal a = INIT_DECIMAL_SCALE(999999, 3);
+    s21_decimal b = INIT_DECIMAL_SCALE(1, 3);
+    s21_decimal result;
+    
+    printf("Before sub: a=%u b=%u\n", a.bit[0], b.bit[0]);
+    
+    int status = s21_sub(a, b, &result);
+    
+    printf("After sub: res=%u status=%d\n", result.bit[0], status);
+    printf("Expected: 999998\n");
+    
+    s21_decimal expected = INIT_DECIMAL_SCALE(999998, 3);
+    ck_assert_int_eq(s21_is_equal(result, expected), 1);
 }
-END_TEST
 
 // START_TEST(test_sub_remove_zeros) {
 //   s21_decimal a = INIT_DECIMAL_SCALE(200000, 3);  // 200.000
