@@ -1156,6 +1156,193 @@ START_TEST(test_float_to_decimal_8) {
 }
 END_TEST
 
+START_TEST(test_truncate_1) {
+    s21_decimal src = {{0x1F018BE6, 0x1, 0x0, 0x40000}}; // 123456789.1234
+    s21_decimal expected = {{0x758EC, 0x0, 0x0, 0x0}}; // 123456789
+    
+    s21_decimal res = {{0}};
+    ck_assert_int_eq(s21_truncate(src, &res), 0);
+    ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_2) {
+  // -0.14569721534856 (scale=14)
+  s21_decimal src = {{0x47139988, 0xD40, 0x0, 0x800E0000}};
+  s21_decimal expected = {{0x0, 0x0, 0x0, 0x0}};  // 0
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_3) {
+  // 1234379 (целое число)
+  s21_decimal src = {{0x12D4CB, 0x0, 0x0, 0x0}};
+  s21_decimal expected = {{0x12D4CB, 0x0, 0x0, 0x0}};
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_4) {
+  // -7896452314745.56984 (scale=5)
+  s21_decimal src = {{0x809F4038, 0xAF56227, 0x0, 0x80050000}};
+  s21_decimal expected = {{0x893C3679, 0x72E, 0x0, 0x80000000}};  // -7896452314745
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_5) {
+  // 85642395734636.4656 (scale=4)
+  s21_decimal src = {{0x3AC3ACF0, 0xBE2A10D, 0x0, 0x40000}};
+  s21_decimal expected = {{0x2C93526C, 0x4DE4, 0x0, 0x0}};  // 85642395734636
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_6) {
+  // -0.0000000795672222222 (scale=19)
+  s21_decimal src = {{0x41C29A0E, 0xB9, 0x0, 0x80130000}};
+  s21_decimal expected = {{0x0, 0x0, 0x0, 0x0}};  // 0
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_7) {
+  // -123412341234.12341234 (scale=8)
+  s21_decimal src = {{0x6FEC01F2, 0xAB44DF0C, 0x0, 0x80080000}};
+  s21_decimal expected = {{0xBBF2E1F2, 0x1C, 0x0, 0x80000000}};  // -123412341234
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_8) {
+  // 792281625142643375935439.50335 (scale=5)
+  s21_decimal src = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x50000}};
+  s21_decimal expected = {{0x84230FCF, 0xAC471B47, 0xA7C5, 0x0}};  // 792281625142643375935439
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_9) {
+  // -1.0000000000000000000008 (scale=22)
+  s21_decimal src = {{0xB2400008, 0x19E0C9BA, 0x21E, 0x80160000}};
+  s21_decimal expected = {{0x1, 0x0, 0x0, 0x80000000}};  // -1
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_10) {
+  // NULL указатель
+  s21_decimal src = {{123, 0, 0, 0}};
+  int status = s21_truncate(src, NULL);
+  ck_assert_int_eq(status, 5);
+}
+END_TEST
+
+START_TEST(test_truncate_11) {
+  // Минимальное значение
+  s21_decimal src = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}};
+  s21_decimal expected = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000}};
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_12) {
+  // 7.77777 (scale=5)
+  s21_decimal src = {{0x76ADF1, 0x0, 0x0, 0x60000}};
+  s21_decimal expected = {{0x7, 0x0, 0x0, 0x0}};  // 7
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_13) {
+  // 1237.0000000777777 (scale=13)
+  s21_decimal src = {{0x0FEAFE31, 0x2BF273, 0x0, 0xD0000}};
+  s21_decimal expected = {{0x4D5, 0x0, 0x0, 0x0}};  // 1237
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_14) {
+  // 35309188505043.582404850638318 (scale=15)
+  s21_decimal src = {{0x1E585DEE, 0x4B1DBED3, 0x72171380, 0xF0000}};
+  s21_decimal expected = {{0xFA35DD3, 0x201D, 0x0, 0x0}};  // 35309188505043
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_truncate_15) {
+  // 10.1 (scale=1)
+  s21_decimal src = {{0x65, 0x0, 0x0, 0x10000}};
+  s21_decimal expected = {{0xA, 0x0, 0x0, 0x0}};  // 10
+  
+  s21_decimal res = {{0}};
+  int status = s21_truncate(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -1268,6 +1455,21 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_float_to_decimal_6);
   tcase_add_test(tc, test_float_to_decimal_7);
   tcase_add_test(tc, test_float_to_decimal_8);
+  tcase_add_test(tc, test_truncate_1);
+  tcase_add_test(tc, test_truncate_2);
+  tcase_add_test(tc, test_truncate_3);
+  tcase_add_test(tc, test_truncate_4);
+  tcase_add_test(tc, test_truncate_5);
+  tcase_add_test(tc, test_truncate_6);
+  tcase_add_test(tc, test_truncate_7);
+  tcase_add_test(tc, test_truncate_8);
+  tcase_add_test(tc, test_truncate_9);
+  tcase_add_test(tc, test_truncate_10);
+  tcase_add_test(tc, test_truncate_11);
+  tcase_add_test(tc, test_truncate_12);
+  tcase_add_test(tc, test_truncate_13);
+  tcase_add_test(tc, test_truncate_14);
+  tcase_add_test(tc, test_truncate_15);
   suite_add_tcase(s, tc);
   return s;
 }
