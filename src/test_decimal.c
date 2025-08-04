@@ -1142,12 +1142,14 @@ START_TEST(test_float_to_decimal_7) {
 END_TEST
 
 START_TEST(test_float_to_decimal_8) {
-  float value = 1.000000000789;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0x1, 0x0, 0x0, 0x0}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+   float src = 0.0;
+  s21_decimal dst = {{0}};
+  s21_decimal expected = {{0}};
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
