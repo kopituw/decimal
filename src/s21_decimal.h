@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
@@ -96,7 +95,6 @@ int s21_negate(s21_decimal value, s21_decimal *result);
 // вспомогательные функции
 
 void init_decimal(s21_decimal *decimal);
-//////
 
 void decimal_to_big(s21_decimal value_1, s21_big_decimal *value_2);
 int get_scale(const s21_decimal *value);
@@ -133,5 +131,6 @@ int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int div10(const s21_decimal *value, s21_decimal *quotient);
 int big_div10(const s21_big_decimal *value, s21_big_decimal *quotient);
 void big_bank_round(s21_big_decimal *value, unsigned count);
+void remove_zero(s21_decimal *value);
 
 #endif

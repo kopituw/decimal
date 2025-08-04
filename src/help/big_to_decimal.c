@@ -21,8 +21,6 @@ int big_to_decimal(s21_big_decimal value, s21_decimal *result, int *scale) {
       c_res.bit[i] = value.b_bit[i];
     }
   } else if (overflow == 1 && res == OK) {
-    // Здесь можно реализовать цикл уменьшения exp с помощью big_div10 и
-    // банковского округления
     big_bank_round(&value, exp);
     if (value.b_bit[3] == 0) {
       for (int i = 0; i <= 2; i++) {

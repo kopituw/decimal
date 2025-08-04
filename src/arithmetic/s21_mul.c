@@ -1,25 +1,8 @@
 #include "../s21_decimal.h"
 
-// void s21_big_mul(s21_big_decimal value1, s21_big_decimal value2,
-// s21_big_decimal *result)
-// {
-//     for (int i = 0; i < 256; i++)
-//     {
-//         if (big_get_bit(value2, i))
-//         {
-//             s21_big_decimal temp = value1;
-//             shift_left(&temp, i);
-//             s21_big_add(*result, temp, result);
-//         }
-//     }
-// }
-
-// 
-
 int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c) {
     if (!c) return NULL_POINTER_EXCEPTION;
 
-    // Проверка на переполнение scale
     int scale_a = get_scale(&a);
     int scale_b = get_scale(&b);
     if (scale_a > 28 || scale_b > 28) return INF;
@@ -35,7 +18,6 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c) {
     
     int overflow = OK;
 
-    // Убираем scale для точного умножения
     set_scale(&a, 0);
     set_scale(&b, 0);
 
@@ -51,7 +33,6 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c) {
     }
 
     if (overflow == OK) {
-        // Проверяем, не превысили ли максимальный scale (28)
         while (result_scale > 28 && !is_zero(temp)) {
             bank_round(&temp, 1);
             result_scale--;

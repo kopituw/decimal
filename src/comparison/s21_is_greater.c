@@ -18,22 +18,17 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
   return result;
 }
 
-// 
-
 
 int s21_is_greater(s21_decimal dec1, s21_decimal dec2) {
-    // Обработка нулей
     if (is_zero(dec1) && is_zero(dec2)) return 0;
     
     int sign1 = get_sign(&dec1);
     int sign2 = get_sign(&dec2);
     
-    // Если знаки разные
     if (sign1 != sign2) {
-        return sign2; // Положительное > отрицательного
+        return sign2;
     }
     
-    // Нормализация для ненулевых чисел
     if (!is_zero(dec1) && !is_zero(dec2)) {
         normalize(&dec1, &dec2);
     }

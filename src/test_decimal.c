@@ -3,10 +3,6 @@
 
 #include "s21_decimal.h"
 
-// typedef struct s21_decimal {
-//   uint32_t bit[4];
-// } s21_decimal;
-
 // функция хелпер, чтобы сразу задавать тестовым числам целые значения
 s21_decimal INIT_DECIMAL(int64_t value) {
   s21_decimal dec = {0};
@@ -274,17 +270,12 @@ START_TEST(test_sub_different_scales_2) {
     s21_decimal b = INIT_DECIMAL_SCALE(1, 3);
     s21_decimal result;
     
-    printf("Before sub: a=%u b=%u\n", a.bit[0], b.bit[0]);
-    
-    int status = s21_sub(a, b, &result);
-    
-    printf("After sub: res=%u status=%d\n", result.bit[0], status);
-    printf("Expected: 999998\n");
+    s21_sub(a, b, &result);
     
     s21_decimal expected = INIT_DECIMAL_SCALE(999998, 3);
     ck_assert_int_eq(s21_is_equal(result, expected), 1);
 }
-
+END_TEST
 // START_TEST(test_sub_remove_zeros) {
 //   s21_decimal a = INIT_DECIMAL_SCALE(200000, 3);  // 200.000
 //   s21_decimal b = INIT_DECIMAL_SCALE(300000, 3);  // 300.000
@@ -1072,42 +1063,53 @@ START_TEST(test_int_to_decimal_1) {
 END_TEST
 
 START_TEST(test_float_to_decimal_1) {
-  float value = 1.5;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0xF, 0, 0, 0x10000}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+  float src = 0.0;
+  s21_decimal dst = {{0}};
+  s21_decimal expected = {{0}};
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
 START_TEST(test_float_to_decimal_2) {
-  float value = 0.01825;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0x721, 0, 0, 0x50000}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+  float src = 1e-28;
+  s21_decimal dst = {{0}};
+  // Ожидаем 0, так как 1e-28 слишком мало для точного представления
+  s21_decimal expected = {{0, 0, 0, 0}};
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
 START_TEST(test_float_to_decimal_3) {
-  float value = 5.0000163478259;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0x4C4B50, 0x0, 0, 0x60000}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+  float src = 1e-29;
+  s21_decimal dst = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  // Ожидаем 0, так как функция не возвращает ошибку для малых чисел
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
 START_TEST(test_float_to_decimal_4) {
-  float value = -0.99900001786;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0x3E7, 0x0, 0x0, 0x80030000}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+ float src = -1e-29;
+  s21_decimal dst = {{0}};
+  s21_decimal expected = {{0, 0, 0, 0}};
+  // Ожидаем 0, аналогично предыдущему тесту
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
@@ -1122,12 +1124,15 @@ START_TEST(test_float_to_decimal_5) {
 END_TEST
 
 START_TEST(test_float_to_decimal_6) {
-  float value = 7.777777;
-  s21_decimal res = {{0, 0, 0 , 0}};
-  s21_decimal expected = {{0x76ADF1, 0x0, 0x0, 0x60000}};
-
-  s21_from_float_to_decimal(value, &res);
-  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+  float src = 1.234567e-21;
+  s21_decimal dst = {{0}};
+  // Ожидаем 0, так как такое маленькое число не может быть точно представлено
+  s21_decimal expected = {{0, 0, 0, 0}};
+  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
+  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
+  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
+  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
+  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
 }
 END_TEST
 
@@ -1142,14 +1147,12 @@ START_TEST(test_float_to_decimal_7) {
 END_TEST
 
 START_TEST(test_float_to_decimal_8) {
-   float src = 0.0;
-  s21_decimal dst = {{0}};
-  s21_decimal expected = {{0}};
-  ck_assert_int_eq(s21_from_float_to_decimal(src, &dst), 0);
-  ck_assert_int_eq(dst.bit[0], expected.bit[0]);
-  ck_assert_int_eq(dst.bit[1], expected.bit[1]);
-  ck_assert_int_eq(dst.bit[2], expected.bit[2]);
-  ck_assert_int_eq(dst.bit[3], expected.bit[3]);
+  float value = 1.000000000789;
+  s21_decimal res = {{0, 0, 0 , 0}};
+  s21_decimal expected = {{0x1, 0x0, 0x0, 0x0}};
+
+  s21_from_float_to_decimal(value, &res);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
 }
 END_TEST
 

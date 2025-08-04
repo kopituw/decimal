@@ -25,14 +25,3 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst){
 
   return OK;
 }
-
-//  int main (){
-// 	s21_decimal src;
-// 	int dst;
-// 	int res;
-//     src = (s21_decimal){{123, 0, 0, 0}};
-//     dst = 0;
-//     res = s21_from_decimal_to_int(src, &dst);
-//     printf("res=%d, dst=%d", res, dst);
-//     return 0;
-// }

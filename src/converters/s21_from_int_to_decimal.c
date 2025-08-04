@@ -10,11 +10,3 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
   dst->bit[0] = abs(src);
   return OK;
 }
-
-// int main (){
-// 	s21_decimal dst;
-// 	s21_from_int_to_decimal("", &dst);
-// 	printf("Знак %u\n", (dst.bit[3] >> 31) & 1);
-// 	printf("%u\n", dst.bit[0]);
-// 	return 0;
-// }

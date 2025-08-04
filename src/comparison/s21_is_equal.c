@@ -14,7 +14,7 @@ int s21_is_equal(s21_decimal value_1, s21_decimal value_2) {
   int flag = 1;
   
   if (is_zero(value_1) && is_zero(value_2)) {
-    flag = 1; // 0 == -0
+    flag = 1;
   } else if (get_sign(&value_1) != get_sign(&value_2)) {
     flag = 0;
   } else {
