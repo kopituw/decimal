@@ -9,6 +9,9 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
     return NULL_POINTER_EXCEPTION;
 
   init_decimal(result);
+  int sign = get_sign(&value_1) ^ get_sign(&value_2);
+  set_sign(&value_1, 0);
+  set_sign(&value_2, 0);
   int overflow = normalize(&value_1, &value_2);
 
   if (overflow == OK)
@@ -26,7 +29,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
       s21_decimal huy = value_2;
 
       // while (s21_is_less_or_equal(huy, value_1))
-      while (huy.bit[0] <= value_1.bit[0])
+      while (s21_is_less_or_equal(huy, value_1))
       {
         // printf("! from div. 1:%u 2:%u %u res = %u\n", value_1.bit[0],
         // value_2.bit[0], huy.bit[0], result->bit[0]);
@@ -39,6 +42,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
         s21_sub(huy, value_2, &huy);
         s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
       }
+      // printf("sign is %d\n", sign);
+      set_sign(result, sign);
     }
   }
 

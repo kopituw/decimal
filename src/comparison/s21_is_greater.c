@@ -30,7 +30,6 @@ int s21_is_greater(s21_decimal dec1, s21_decimal dec2)
   {
     result = sign1 < get_sign(&dec2);
   }
-  printf("%d\n", result);
   if (get_scale(&dec1) != get_scale(&dec2))
   {
     result = sign1 ? get_scale(&dec1) < get_scale(&dec2) : get_scale(&dec1) > get_scale(&dec2);

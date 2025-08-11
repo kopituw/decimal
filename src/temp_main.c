@@ -12,13 +12,14 @@ int main(void)
   int total_tests_count = 0, failed_tests_count = 0;
   // test_s21_is_greater(&total_tests_count);
   // test_s21_is_equal(&total_tests_count);
-  test_s21_is_greater_or_equal(&total_tests_count);
+  // test_s21_is_greater_or_equal(&total_tests_count);
   // failed_tests_count += test_s21_add(&total_tests_count);
   // failed_tests_count += test_s21_sub(&total_tests_count);
   // failed_tests_count += test_s21_mul(&total_tests_count);
   // failed_tests_count += test_s21_div(&total_tests_count);
   // failed_tests_count += test_s21_normalize(&total_tests_count);
   // failed_tests_count += test_s21_bank_round(&total_tests_count);
+  failed_tests_count += test_s21_round(&total_tests_count);
   // s21_decimal kek = {{1230000, 0, 0, 0}};
   // set_scale(&kek, 2);
   // s21_decimal ten = {{10, 0, 0, 0}};
@@ -28,6 +29,14 @@ int main(void)
   // printf("res = %u.%u.%u\n", result.bit[0], result.bit[1], result.bit[2]);
 
   // remove_zeros(&kek);
+
+  // s21_decimal a = {{1234575, 0, 0, 0}};
+  // set_sign(&a, 1);
+  // set_scale(&a, 2);
+  // s21_decimal result = {{0, 0, 0, 0}};
+
+  // s21_floor(a, &result);
+  // printf("res = %u.%u.%u with scale %d\n", result.bit[0], result.bit[1], result.bit[2], get_scale(&result));
 
   printf("\n\n%.2f%% of %d tests passed\n\n",
          100 - ((double)failed_tests_count * 100 / (double)total_tests_count),
@@ -105,19 +114,46 @@ int test_s21_bank_round(int *total_tests_count)
                                       {{123450, 0, 0, 0}},
                                       {{123455, 0, 0, 0}},
                                       {{12345, 0, 0, 0}}};
-  int r_values[3] = {1, 2, 3};
+  int r_values[4] = {1, 2, 3, 123};
 
   for (int i = 0; i < 4; i++)
   {
-    for (int j = 0; j < 3; j++)
+    for (int j = 0; j < 4; j++)
     {
       (*total_tests_count)++;
       s21_decimal a = decimals_to_round[i];
 
       bank_round(&a, r_values[j]);
-      printf("dec before: %u and after rounding for %d: %u\n\n",
+      printf("dec before: %u and after bank rounding for %d: %u\n\n",
              decimals_to_round[i].bit[0], r_values[j], a.bit[0]);
     }
+  }
+  return failed_tests_count;
+}
+
+int test_s21_round(int *total_tests_count)
+{
+  int failed_tests_count = 0;
+  s21_decimal decimals_to_round[5] = {{{44540, 0, 0, 0}},
+                                      {{44550, 0, 0, 0}},
+                                      {{44449, 0, 0, 0}},
+                                      {{44420, 0, 0, 0}},
+                                      {{44482, 0, 0, 0}}};
+  // int r_values[4] = {1, 2, 3, 123};
+  s21_decimal result = {0};
+
+  for (int i = 0; i < 5; i++)
+  {
+    // for (int j = 0; j < 4; j++)
+    // {
+    (*total_tests_count)++;
+    // s21_decimal a = decimals_to_round[i];
+    set_scale(&decimals_to_round[i], 3);
+
+    s21_round(decimals_to_round[i], &result);
+    printf("dec before: %u and after rounding: %u\n\n",
+           decimals_to_round[i].bit[0], result.bit[0]);
+    // }
   }
   return failed_tests_count;
 }
@@ -125,48 +161,48 @@ int test_s21_bank_round(int *total_tests_count)
 int test_s21_add(int *total_tests_count)
 {
   int failed_tests_count = 0;
-  // int values_a[10] = {0, -0, 1, -1, 5, -5, 8, -8, 56786, -98765};
-  // int values_b[10] = {0, -0, 1, -1, 5, -5, 8, -8, 56786, -98765};
+  int values_a[10] = {0, -0, 1, -1, 5, -5, 8, -8, 56786, -98765};
+  int values_b[10] = {0, -0, 1, -1, 5, -5, 8, -8, 56786, -98765};
 
-  // for (int i = 0; i < 10; i++)
-  // {
-  //   for (int j = 0; j < 10; j++)
-  //   {
-  //     if (values_a[i] != values_b[j])
-  //     {
-  //       (*total_tests_count)++;
-  //       int na = values_a[i], nb = values_b[j];
-  //       s21_decimal a = {{na > 0 ? na : -na, 0, 0, 0}};
-  //       s21_decimal b = {{nb > 0 ? nb : -nb, 0, 0, 0}};
-  //       s21_decimal result;
-  //       init_decimal(&result);
-  //       set_sign(&a, (na < 0));
-  //       set_sign(&b, (nb < 0));
-  //       char my_res[512] = {0};
-  //       char exp_res[512] = {0};
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      if (values_a[i] != values_b[j])
+      {
+        (*total_tests_count)++;
+        int na = values_a[i], nb = values_b[j];
+        s21_decimal a = {{na > 0 ? na : -na, 0, 0, 0}};
+        s21_decimal b = {{nb > 0 ? nb : -nb, 0, 0, 0}};
+        s21_decimal result;
+        init_decimal(&result);
+        set_sign(&a, (na < 0));
+        set_sign(&b, (nb < 0));
+        char my_res[512] = {0};
+        char exp_res[512] = {0};
 
-  //       s21_add(a, b, &result);
-  //       char sign1 = get_sign(&a) ? '-' : '+';
-  //       char sign2 = get_sign(&b) ? '-' : '+';
-  //       char sign3 = get_sign(&result) ? '-' : '+';
+        s21_add(a, b, &result);
+        char sign1 = get_sign(&a) ? '-' : '+';
+        char sign2 = get_sign(&b) ? '-' : '+';
+        char sign3 = get_sign(&result) ? '-' : '+';
 
-  //       sprintf(my_res, "%c%u + %c%u = %c%u\n", sign1, a.bit[0], sign2,
-  //               b.bit[0], sign3, result.bit[0]);
-  //       sprintf(exp_res, "%+d + %+d = %+d\n", na, nb, na + nb);
+        sprintf(my_res, "%c%u + %c%u = %c%u\n", sign1, a.bit[0], sign2,
+                b.bit[0], sign3, result.bit[0]);
+        sprintf(exp_res, "%+d + %+d = %+d\n", na, nb, na + nb);
 
-  //       if (!strcmp(my_res, exp_res))
-  //       {
-  //         printf("TEST #%d PASSED!\n", *total_tests_count);
-  //       }
-  //       else
-  //       {
-  //         failed_tests_count++;
-  //         printf("TEST #%d FAILED!\n", *total_tests_count);
-  //         printf(" my_res: %s\nexp_res: %s\n", my_res, exp_res);
-  //       }
-  //     }
-  //   }
-  // }
+        if (!strcmp(my_res, exp_res))
+        {
+          printf("TEST #%d PASSED!\n", *total_tests_count);
+        }
+        else
+        {
+          failed_tests_count++;
+          printf("TEST #%d FAILED!\n", *total_tests_count);
+          printf(" my_res: %s\nexp_res: %s\n", my_res, exp_res);
+        }
+      }
+    }
+  }
 
   s21_decimal max = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
   s21_decimal one = {{1, 0, 0, 0}};
@@ -538,12 +574,12 @@ int test_s21_mul(int *total_tests_count)
 int test_s21_div(int *total_tests_count)
 {
   int failed_tests_count = 0;
-  int values_a[10] = {12344, 5, 8, 6, 26, 10, 2};
-  int values_b[10] = {12344, 5, 8, 29, 9, 10, 2};
+  int values_a[10] = {12344, 5, -8, 6, 26, 10, -2};
+  int values_b[10] = {12344, 5, -8, 29, 9, 10, -2};
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 7; i++)
   {
-    for (int j = 0; j < 5; j++)
+    for (int j = 0; j < 7; j++)
     {
       if (values_a[i] != values_b[j])
       {
