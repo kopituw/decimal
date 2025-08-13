@@ -47,6 +47,7 @@ int test_s21_div(int *total_tests_count);
 int test_s21_mul(int *total_tests_count);
 int test_s21_normalize(int *total_tests_count);
 int test_s21_round(int *total_tests_count);
+int test_s21_floor(int *total_tests_count);
 
 // арифметика
 

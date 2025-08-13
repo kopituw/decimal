@@ -20,6 +20,8 @@ int main(void)
   // failed_tests_count += test_s21_normalize(&total_tests_count);
   // failed_tests_count += test_s21_bank_round(&total_tests_count);
   failed_tests_count += test_s21_round(&total_tests_count);
+  failed_tests_count += test_s21_floor(&total_tests_count);
+
   // s21_decimal kek = {{1230000, 0, 0, 0}};
   // set_scale(&kek, 2);
   // s21_decimal ten = {{10, 0, 0, 0}};
@@ -134,26 +136,56 @@ int test_s21_bank_round(int *total_tests_count)
 int test_s21_round(int *total_tests_count)
 {
   int failed_tests_count = 0;
-  s21_decimal decimals_to_round[5] = {{{44540, 0, 0, 0}},
-                                      {{44550, 0, 0, 0}},
+  s21_decimal decimals_to_round[5] = {{{44440, 0, 0, 0}},
+                                      {{44450, 0, 0, 0}},
                                       {{44449, 0, 0, 0}},
-                                      {{44420, 0, 0, 0}},
+                                      {{44470, 0, 0, 0}},
                                       {{44482, 0, 0, 0}}};
   // int r_values[4] = {1, 2, 3, 123};
   s21_decimal result = {0};
 
   for (int i = 0; i < 5; i++)
   {
+    if (i == 2 || i == 3)
+    {
+      // printf("minus\n");
+      set_sign(&decimals_to_round[i], 1);
+    }
     // for (int j = 0; j < 4; j++)
     // {
     (*total_tests_count)++;
     // s21_decimal a = decimals_to_round[i];
-    set_scale(&decimals_to_round[i], 3);
+    set_scale(&decimals_to_round[i], 2);
 
     s21_round(decimals_to_round[i], &result);
-    printf("dec before: %u and after rounding: %u\n\n",
-           decimals_to_round[i].bit[0], result.bit[0]);
+    printf("dec before: %s%u and after rounding: %u\n\n",
+           get_sign(&decimals_to_round[i]) ? "-" : "+", decimals_to_round[i].bit[0], result.bit[0]);
     // }
+  }
+  return failed_tests_count;
+}
+
+int test_s21_floor(int *total_tests_count)
+{
+  int failed_tests_count = 0;
+  s21_decimal decimals_to_round[5] = {{{449, 0, 0, 0}},
+                                      {{442, 0, 0, 0}},
+                                      {{448, 0, 0, 0}},
+                                      {{443, 0, 0, 0}},
+                                      {{442, 0, 0, 0}}};
+  s21_decimal result = {0};
+
+  for (int i = 0; i < 5; i++)
+  {
+    if (i == 2 || i == 3)
+      set_sign(&decimals_to_round[i], 1);
+    (*total_tests_count)++;
+
+    set_scale(&decimals_to_round[i], 1);
+
+    s21_floor(decimals_to_round[i], &result);
+    printf("dec before: %s%u and after flooring: %u\n\n",
+           get_sign(&decimals_to_round[i]) ? "-" : "+", decimals_to_round[i].bit[0], result.bit[0]);
   }
   return failed_tests_count;
 }
