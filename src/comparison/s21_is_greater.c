@@ -18,26 +18,28 @@ int s21_big_is_greater(s21_big_decimal value1, s21_big_decimal value2) {
   return result;
 }
 
+int s21_is_greater(s21_decimal dec1, s21_decimal dec2)
+{
+  int result = -1;
+  int sign1 = get_sign(&dec1);
+  if (sign1 != get_sign(&dec2))
+  {
+    result = sign1 < get_sign(&dec2);
+  }
+  if (get_scale(&dec1) != get_scale(&dec2))
+  {
+    result = sign1 ? get_scale(&dec1) < get_scale(&dec2) : get_scale(&dec1) > get_scale(&dec2);
+  }
 
-int s21_is_greater(s21_decimal dec1, s21_decimal dec2) {
-    if (is_zero(dec1) && is_zero(dec2)) return 0;
-    
-    int sign1 = get_sign(&dec1);
-    int sign2 = get_sign(&dec2);
-    
-    if (sign1 != sign2) {
-        return sign2;
-    }
-    
-    if (!is_zero(dec1) && !is_zero(dec2)) {
-        normalize(&dec1, &dec2);
-    }
-    
-    // Сравнение по модулю
-    int abs_cmp = s21_is_greater_modal(dec1, dec2);
-    
-    // Инвертируем результат для отрицательных чисел
-    return sign1 ? !abs_cmp : abs_cmp;
+  for (int i = 2; i >= 0 && result == -1; i--)
+  {
+    if (dec1.bit[i] != dec2.bit[i])
+      result = sign1 ? dec1.bit[i] < dec2.bit[i] : dec1.bit[i] > dec2.bit[i];
+  }
+  if (result == -1)
+    result = 0;
+
+  return result;
 }
 
 int s21_is_greater_modal(s21_decimal dec1, s21_decimal dec2) {
