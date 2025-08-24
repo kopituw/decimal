@@ -56,6 +56,11 @@ void bank_round(s21_decimal *dec, unsigned count)
   remove_zero(dec);
 }
 
+void big_bank_round(s21_big_decimal *value, unsigned count) {
+    if (count) {
+    }
+}
+
 // void remove_zeros(s21_decimal *value)
 // {
 //   s21_decimal ostatok = {{0, 0, 0, 0}};
