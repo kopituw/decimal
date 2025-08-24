@@ -1054,6 +1054,26 @@ START_TEST(test_decimal_to_float_4) {
 }
 END_TEST
 
+START_TEST(test_decimal_to_float_5) {
+  s21_decimal value = INIT_DECIMAL_SCALE(0, 0);
+  float res = 0.0f;
+  float expected = 0.0f;
+
+  s21_from_decimal_to_float(value, &res);
+  ck_assert_float_eq(res, expected);
+}
+END_TEST
+
+// START_TEST(test_decimal_to_float_5) {
+//   s21_decimal value = INIT_DECIMAL_SCALE(0, 0);
+//   float res = 0.0f;
+//   float expected = 0.0f;
+
+//   s21_from_decimal_to_float(value, &res);
+//   ck_assert_float_eq(res, expected);
+// }
+// END_TEST
+
 START_TEST(test_decimal_to_int_1) {
   s21_decimal value = {{2, 0, 0 , 0}};
   int res;
@@ -1569,6 +1589,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_decimal_to_float_2);
   tcase_add_test(tc, test_decimal_to_float_3);
   tcase_add_test(tc, test_decimal_to_float_4);
+  tcase_add_test(tc, test_decimal_to_float_5);
   tcase_add_test(tc, test_decimal_to_int_1);
   tcase_add_test(tc, test_decimal_to_int_2);
   tcase_add_test(tc, test_decimal_to_int_3);
