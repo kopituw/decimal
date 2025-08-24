@@ -49,7 +49,6 @@
 
 # .PHONY: all clean test
 
-
 UNAME_S := $(shell uname -s)
 
 # Настройки в зависимости от ОС
@@ -60,9 +59,9 @@ ifeq ($(UNAME_S),Linux)
 endif
 ifeq ($(UNAME_S),Darwin)
     OPEN_CMD = open
-    # ПРАВИЛЬНЫЕ ПУТИ ДЛЯ macOS
-    CHECK_INCLUDE_PATH = /opt/homebrew/Cellar/check/0.15.2/include
-    CHECK_LIB_PATH = /opt/homebrew/Cellar/check/0.15.2/lib
+    CHECK_PREFIX = $(shell brew --prefix check)
+    CHECK_INCLUDE_PATH = $(CHECK_PREFIX)/include
+    CHECK_LIB_PATH = $(CHECK_PREFIX)/lib
     CFLAGS += -I$(CHECK_INCLUDE_PATH)
     TEST_LIBS = -L$(CHECK_LIB_PATH) -lcheck -lpthread -lm
     GCOV = gcov

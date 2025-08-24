@@ -123,7 +123,6 @@ void bank_round(s21_decimal *dec, unsigned count);
 int is_zero(s21_decimal value);
 int big_is_zero(s21_big_decimal value);
 int correct_last_bits(s21_decimal value);
-int big_to_decimal(s21_big_decimal value, s21_decimal *result, int *scale);
 int remains(s21_big_decimal c_result, s21_big_decimal value_1,
             s21_big_decimal value_2, s21_big_decimal *result, int scale);
 void shift_right(s21_decimal *value, int offset);

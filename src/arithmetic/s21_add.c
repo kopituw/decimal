@@ -1,10 +1,10 @@
 #include "../s21_decimal.h"
 
-void init_decimal(s21_decimal *decimal)
-{
-  for (int i = 0; i < 128; i++)
-    set_bit(decimal, i, 0);
-}
+// void init_decimal(s21_decimal *decimal)
+// {
+//   for (int i = 0; i < 128; i++)
+//     set_bit(decimal, i, 0);
+// }
 
 int s21_round(s21_decimal value, s21_decimal *result)
 {
