@@ -2,12 +2,16 @@
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 {
+  if (is_zero(value_1) || is_zero(value_2))
+    return DIVISION_BY_ZERO;
 
+  if (!result)
+    return NULL_POINTER_EXCEPTION;
+    
   s21_decimal remain = {0};
   s21_decimal temp = {0};
   int scale = 0;
   s21_div_basic(value_1, value_2, result, &remain);
-  printf("ostatok? = %u with %d\n", remain.bit[0], get_scale(&remain));
   while (!is_zero(remain) && get_scale(&remain) < 28 && get_scale(&result) < 28)
   {
     s21_mul(remain, (s21_decimal){{10, 0, 0, 0}}, &remain);
@@ -16,7 +20,6 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
     s21_add(*result, temp, result);
     set_scale(result, ++scale);
   }
-  // printf("scale = %d\n", scale);
 
   return OK;
 }
@@ -76,10 +79,8 @@ int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 
   int overflow = OK;
   overflow = s21_div(value_1, value_2, result);
-  // s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
   if (overflow == OK)
     overflow = s21_mul(*result, value_2, result);
-  // set_scale(&tmp, get_scale(&value_1));
   if (overflow == OK)
     overflow = s21_sub(value_1, *result, result);
   return overflow;

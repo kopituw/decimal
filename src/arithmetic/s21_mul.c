@@ -53,23 +53,3 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c) {
 
     return overflow;
 }
-
-int s21_mul_int(s21_decimal dec, int integer, s21_decimal *result)
-{
-  if (integer && dec.bit[0] && (get_sign(&dec) ^ (integer < 0)))
-    set_sign(result, 1);
-
-  if (integer < 0)
-    integer = -integer;
-
-  int counter = integer / 2;
-  while (counter)
-  {
-    result->bit[0] += dec.bit[0] << 1;
-    counter--;
-  }
-  if (integer && integer % 2 == 1)
-    result->bit[0] += dec.bit[0];
-
-  return 1;
-}
