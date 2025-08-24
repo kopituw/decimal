@@ -1,47 +1,5 @@
 #include "../s21_decimal.h"
 
-int s21_round(s21_decimal value, s21_decimal *result)
-{
-  if (result == NULL)
-    return NULL_POINTER_EXCEPTION;
-
-  int count = get_scale(&value), overflow = OK;
-  s21_decimal fpart_size = {{1, 0, 0, 0}}, five = {{5, 0, 0, 0}};
-
-  set_scale(&value, 0);
-  while (count-- > 0)
-  {
-    s21_mul(fpart_size, (s21_decimal){{10, 0, 0, 0}}, &fpart_size);
-  }
-  s21_mul(fpart_size, five, &five);
-  s21_div(five, (s21_decimal){{10, 0, 0, 0}}, &five);
-  s21_decimal remain = {0};
-  s21_remain(value, fpart_size, &remain);
-  overflow = s21_div(value, fpart_size, &value);
-
-  if (s21_is_greater_or_equal_modal(remain, five) && !is_zero(remain))
-  {
-    overflow = denya_add_basic(value, (s21_decimal){{1, 0, 0, 0}}, &value);
-  }
-
-  *result = value;
-  set_scale(result, 0);
-  return overflow;
-}
-
-int s21_floor(s21_decimal value, s21_decimal *result)
-{
-  int overflow = OK;
-  s21_decimal half = {{5, 0, 0, 0}};
-
-  set_scale(&half, get_scale(&value));
-
-  s21_sub(value, half, &value);
-  s21_round(value, result);
-
-  return overflow;
-}
-
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 {
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),

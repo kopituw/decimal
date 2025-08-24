@@ -432,10 +432,32 @@ START_TEST(test_div_simple) {
 }
 END_TEST
 
-// START_TEST(test_div_2) {
-//   s21_decimal a = INIT_DECIMAL(5);
-//   s21_decimal b = INIT_DECIMAL(2);
-//   s21_decimal exp = INIT_DECIMAL(2);
+START_TEST(test_div_2) {
+  s21_decimal a = INIT_DECIMAL(5);
+  s21_decimal b = INIT_DECIMAL(2);
+  s21_decimal exp = INIT_DECIMAL_SCALE(25, 1);
+  s21_decimal result;
+
+  s21_div(a, b, &result);
+  ck_assert_int_eq(s21_is_equal(result, exp), 1);
+}
+END_TEST
+
+// START_TEST(test_div_3) {
+//   s21_decimal a = INIT_DECIMAL(4294967297);
+//   s21_decimal b = INIT_DECIMAL(10);
+//   s21_decimal exp = INIT_DECIMAL_SCALE(4294967297, 1);
+//   s21_decimal result;
+
+//   s21_div(a, b, &result);
+//   ck_assert_int_eq(s21_is_equal(result, exp), 1);
+// }
+// END_TEST
+
+// START_TEST(test_div_4) {
+//   s21_decimal a = INIT_DECIMAL_SCALE(0006, 3);
+//   s21_decimal b = INIT_DECIMAL(-2);
+//   s21_decimal exp = INIT_DECIMAL_SCALE(-0003, 3);
 //   s21_decimal result;
 
 //   s21_div(a, b, &result);
@@ -1405,6 +1427,146 @@ START_TEST(test_truncate_15) {
 }
 END_TEST
 
+START_TEST(test_floor_1) {
+  s21_decimal src = INIT_DECIMAL_SCALE(4815162342, 4);
+  s21_decimal expected = INIT_DECIMAL(481516);
+  
+  s21_decimal res = {{0}};
+  int status = s21_floor(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_floor_2) {
+  s21_decimal src = INIT_DECIMAL_SCALE(-789645231474556984, 5);
+  s21_decimal expected = INIT_DECIMAL(-7896452314746);
+  
+  s21_decimal res = {{0}};
+  int status = s21_floor(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_floor_3) {
+  s21_decimal src = INIT_DECIMAL_SCALE(-5000016, 6);
+  s21_decimal expected = INIT_DECIMAL(-6);
+  
+  s21_decimal res = {{0}};
+  int status = s21_floor(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_floor_4) {
+  s21_decimal src = INIT_DECIMAL_SCALE(6, 0);
+  s21_decimal expected = INIT_DECIMAL(6);
+  
+  s21_decimal res = {{0}};
+  int status = s21_floor(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_negate) {
+	    s21_decimal val = {{123, 0, 0, 0}};  
+    s21_decimal expected = {{123, 0, 0, (1 << 31)}}; 
+    s21_decimal result = {0};
+    s21_negate(val, &result);
+    ck_assert_int_eq(s21_is_equal(result, expected), 1);
+}
+
+START_TEST(test_round_1) {
+  s21_decimal src = INIT_DECIMAL_SCALE(4815162342, 4);
+  s21_decimal expected = INIT_DECIMAL(481516);
+  
+  s21_decimal res = {{0}};
+  int status = s21_round(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_round_2) {
+  s21_decimal src = INIT_DECIMAL_SCALE(1234567, 0);
+  s21_decimal expected = INIT_DECIMAL(1234567);
+  
+  s21_decimal res = {{0}};
+  int status = s21_round(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+START_TEST(test_round_3) {
+  s21_decimal src = INIT_DECIMAL_SCALE(856423957346364656, 4);
+  s21_decimal expected = INIT_DECIMAL(85642395734636);
+  
+  s21_decimal res = {{0}};
+  int status = s21_round(src, &res);
+  
+  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(s21_is_equal(res, expected), 1);
+}
+END_TEST
+
+// Тесты для div10
+START_TEST(test_div10_basic) {
+    s21_decimal value = {{123456789, 0, 0, 0}};
+    s21_decimal quotient;
+    int remainder = div10(&value, &quotient);
+    ck_assert_int_eq(remainder, 9);
+    ck_assert_uint_eq(quotient.bit[0], 12345678);
+}
+END_TEST
+
+START_TEST(test_div10_with_remainder) {
+    s21_decimal value = {{10, 0, 0, 0}};
+    s21_decimal quotient;
+    int remainder = div10(&value, &quotient);
+    ck_assert_int_eq(remainder, 0);
+    ck_assert_uint_eq(quotient.bit[0], 1);
+}
+END_TEST
+
+START_TEST(test_big_div10_basic) {
+    s21_big_decimal value = {{123456789, 0, 0, 0, 0, 0, 0, 0}};
+    s21_big_decimal quotient;
+    int remainder = big_div10(&value, &quotient);
+    ck_assert_int_eq(remainder, 9);
+    ck_assert_uint_eq(quotient.b_bit[0], 12345678);
+}
+END_TEST
+
+START_TEST(test_bank_round_positive) {
+    s21_decimal dec = {{123456789, 0, 0, 0}};
+    set_scale(&dec, 5);
+    bank_round(&dec, 3);
+    s21_decimal expected = {{1235, 0, 0, 0}};
+    set_scale(&expected, 2);
+    ck_assert_int_eq(s21_is_equal(dec, expected), 1);
+}
+END_TEST
+
+START_TEST(test_bank_round_negative) {
+    s21_decimal dec = {{123456789, 0, 0, 0x80000000}};
+    set_scale(&dec, 5);
+    bank_round(&dec, 3);
+    s21_decimal expected = {{1235, 0, 0, 0x80000000}};
+    set_scale(&expected, 2);
+    ck_assert_int_eq(s21_is_equal(dec, expected), 1);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -1419,8 +1581,6 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_add_max_decimal_negative);
   tcase_add_test(tc, test_add_different_scales);
   tcase_add_test(tc, test_add_different_scales_2);
-  // tcase_add_test(tc, test_add_remove_zeros);
-  // tcase_add_test(tc, test_add_different_scales_negative);
   tcase_add_test(tc, test_add_scale_overflow);
   tcase_add_test(tc, test_sub_simple);
   tcase_add_test(tc, test_sub_simple_negative_positive);
@@ -1431,8 +1591,6 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_sub_max_decimal);
   tcase_add_test(tc, test_sub_different_scales);
   tcase_add_test(tc, test_sub_different_scales_2);
-  // tcase_add_test(tc, test_sub_remove_zeros);
-  // tcase_add_test(tc, test_sub_different_scales_negative);
   tcase_add_test(tc, test_sub_scale_overflow);
   tcase_add_test(tc, test_mul_simple);
   tcase_add_test(tc, test_mul_simple_negative);
@@ -1443,10 +1601,11 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_mul_overflow);
   tcase_add_test(tc, test_mul_overflow_negative);
   tcase_add_test(tc, test_mul_different_scales);
-  // tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
-  // tcase_add_test(tc, test_div_2);
+  tcase_add_test(tc, test_div_2);
+  // tcase_add_test(tc, test_div_3);
+  // tcase_add_test(tc, test_div_4);
   tcase_add_test(tc, test_is_equal_1);
   tcase_add_test(tc, test_is_equal_2);
   tcase_add_test(tc, test_is_equal_3);
@@ -1538,6 +1697,19 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_truncate_13);
   tcase_add_test(tc, test_truncate_14);
   tcase_add_test(tc, test_truncate_15);
+  tcase_add_test(tc, test_floor_1);
+  tcase_add_test(tc, test_floor_2);
+  tcase_add_test(tc, test_floor_3);
+  tcase_add_test(tc, test_floor_4);
+  tcase_add_test(tc, test_negate);
+  tcase_add_test(tc, test_round_1);
+  tcase_add_test(tc, test_round_2);
+  tcase_add_test(tc, test_round_3);
+  tcase_add_test(tc, test_div10_basic);
+  tcase_add_test(tc, test_div10_with_remainder);
+  tcase_add_test(tc, test_big_div10_basic);
+  tcase_add_test(tc, test_bank_round_positive);
+  tcase_add_test(tc, test_bank_round_negative);
   suite_add_tcase(s, tc);
   return s;
 }
