@@ -1,7 +1,5 @@
 #include "../s21_decimal.h"
 
-// 
-
 int is_max_decimal(s21_decimal dec) {
     return dec.bit[0] == 0xFFFFFFFF && 
            dec.bit[1] == 0xFFFFFFFF && 

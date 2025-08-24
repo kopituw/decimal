@@ -1,7 +1,6 @@
 #include "../s21_decimal.h"
 
 
-// Делит value на 10, кладёт результат в quotient, остаток возвращает
 int div10(const s21_decimal *value, s21_decimal *quotient)
 {
   init_decimal(quotient);
@@ -12,11 +11,10 @@ int div10(const s21_decimal *value, s21_decimal *quotient)
     quotient->bit[i] = (uint32_t)(acc / 10);
     rem = acc % 10;
   }
-  quotient->bit[3] = value->bit[3]; // копируем служебные биты (знак, scale)
+  quotient->bit[3] = value->bit[3];
   return (int)rem;
 }
 
-// Делит value на 10, кладёт результат в quotient, остаток возвращает
 int big_div10(const s21_big_decimal *value, s21_big_decimal *quotient)
 {
   big_null_decimal(quotient);
@@ -41,7 +39,6 @@ void bank_round(s21_decimal *dec, unsigned count)
     set_scale(dec, 0);
     s21_remain(*dec, ten, &dec_mod);
     s21_div(*dec, ten, dec);
-    // printf("! remain = %u\n", dec_mod.bit[0]);
     if (dec_mod.bit[0] > 5)
     {
       denya_add_basic(*dec, one, dec);
@@ -56,7 +53,6 @@ void bank_round(s21_decimal *dec, unsigned count)
   }
   dec->bit[3] = system_bit;
   set_scale(dec, exp);
-  // remove_zeros(dec);
 }
 
 // void remove_zeros(s21_decimal *value)
