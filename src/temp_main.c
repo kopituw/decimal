@@ -10,17 +10,17 @@ void print_decimal(s21_decimal dec);
 int main(void)
 {
   int total_tests_count = 0, failed_tests_count = 0;
-  test_s21_is_greater(&total_tests_count);
-  test_s21_is_equal(&total_tests_count);
-  test_s21_is_greater_or_equal(&total_tests_count);
-  failed_tests_count += test_s21_add(&total_tests_count);
-  failed_tests_count += test_s21_sub(&total_tests_count);
-  failed_tests_count += test_s21_mul(&total_tests_count);
+  // test_s21_is_greater(&total_tests_count);
+  // test_s21_is_equal(&total_tests_count);
+  // test_s21_is_greater_or_equal(&total_tests_count);
+  // failed_tests_count += test_s21_add(&total_tests_count);
+  // failed_tests_count += test_s21_sub(&total_tests_count);
+  // failed_tests_count += test_s21_mul(&total_tests_count);
   failed_tests_count += test_s21_div(&total_tests_count);
-  failed_tests_count += test_s21_normalize(&total_tests_count);
-  failed_tests_count += test_s21_bank_round(&total_tests_count);
-  failed_tests_count += test_s21_round(&total_tests_count);
-  failed_tests_count += test_s21_floor(&total_tests_count);
+  // failed_tests_count += test_s21_normalize(&total_tests_count);
+  // failed_tests_count += test_s21_bank_round(&total_tests_count);
+  // failed_tests_count += test_s21_round(&total_tests_count);
+  // failed_tests_count += test_s21_floor(&total_tests_count);
 
   // s21_decimal kek = {{1230000, 0, 0, 0}};
   // set_scale(&kek, 2);
@@ -606,14 +606,14 @@ int test_s21_mul(int *total_tests_count)
 int test_s21_div(int *total_tests_count)
 {
   int failed_tests_count = 0;
-  int values_a[10] = {12344, 5, -8, 6, 26, 10, -2};
-  int values_b[10] = {12344, 5, -8, 29, 9, 10, -2};
+  int values_a[10] = {5, 2, -8, 6, 26, 10, -2};
+  int values_b[10] = {5, 2, -8, 29, 9, 10, -2};
 
   for (int i = 0; i < 7; i++)
   {
     for (int j = 0; j < 7; j++)
     {
-      if (values_a[i] != values_b[j])
+      if (values_a[i] != values_b[j] && values_a[i] > values_b[j])
       {
         (*total_tests_count)++;
         int na = values_a[i], nb = values_b[j];
@@ -631,14 +631,14 @@ int test_s21_div(int *total_tests_count)
         char sign2 = get_sign(&b) ? '-' : '+';
         char sign3 = get_sign(&result) ? '-' : '+';
 
-        sprintf(my_res, "%c%u / %c%u = %c%u\n", sign1, a.bit[0], sign2,
-                b.bit[0], sign3, result.bit[0]);
-        sprintf(exp_res, "%+d / %+d = %+d\n", na, nb, na / nb);
+        sprintf(my_res, "%c%u / %c%u = %c%u scl %d\n", sign1, a.bit[0], sign2,
+                b.bit[0], sign3, result.bit[0], get_scale(&result));
+        sprintf(exp_res, "%+d / %+d = %+f\n", na, nb, (double)na / (double)nb);
 
         if (!strcmp(my_res, exp_res))
         {
           printf("TEST #%d PASSED!\n", *total_tests_count);
-          // printf(" my_res: %s\nexp_res: %s", my_res, exp_res);
+          printf(" my_res: %s\nexp_res: %s", my_res, exp_res);
         }
         else
         {

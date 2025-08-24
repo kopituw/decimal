@@ -1,6 +1,31 @@
 #include "../s21_decimal.h"
 
+// int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
+// {
+// }
+
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
+{
+
+  s21_decimal remain = {0};
+  s21_decimal temp = {0};
+  int scale = 0;
+  s21_div_basic(value_1, value_2, result, &remain);
+  printf("ostatok? = %u with %d\n", remain.bit[0], get_scale(&remain));
+  while (!is_zero(remain) && get_scale(&remain) < 28 && get_scale(&result) < 28)
+  {
+    s21_mul(remain, (s21_decimal){{10, 0, 0, 0}}, &remain);
+    s21_mul(*result, (s21_decimal){{10, 0, 0, 0}}, result);
+    s21_div_basic(remain, value_2, &temp, &remain);
+    s21_add(*result, temp, result);
+    set_scale(result, ++scale);
+  }
+  // printf("scale = %d\n", scale);
+
+  return OK;
+}
+
+int s21_div_basic(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remain)
 {
   if (is_zero(value_1) || is_zero(value_2))
     return DIVISION_BY_ZERO;
@@ -13,6 +38,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
   set_sign(&value_1, 0);
   set_sign(&value_2, 0);
   int overflow = normalize(&value_1, &value_2);
+  printf("--- val1 = %u scl %d, val2 = %u scl %d\n", value_1.bit[0], get_scale(&value_1), value_2.bit[0], get_scale(&value_2));
 
   if (overflow == OK)
   {
@@ -23,32 +49,112 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
     else if (s21_is_less(value_1, value_2))
     {
       set_bit(result, 0, 0);
+      *remain = value_1;
     }
     else
     {
-      s21_decimal huy = value_2;
+      *remain = value_2;
 
-      // while (s21_is_less_or_equal(huy, value_1))
-      while (s21_is_less_or_equal(huy, value_1))
+      while (s21_is_less_or_equal(*remain, value_1))
       {
-        // printf("! from div. 1:%u 2:%u %u res = %u\n", value_1.bit[0],
-        // value_2.bit[0], huy.bit[0], result->bit[0]);
         overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
+
         if (!overflow)
-          overflow = s21_mul(value_2, *result, &huy);
+          overflow = s21_mul(value_2, *result, remain);
       }
       if (overflow == OK)
       {
-        s21_sub(huy, value_2, &huy);
+        s21_sub(*remain, value_2, remain);
         s21_sub(*result, (s21_decimal){{1, 0, 0, 0}}, result);
       }
-      // printf("sign is %d\n", sign);
+      s21_sub(value_1, *remain, remain);
+
       set_sign(result, sign);
     }
   }
 
   return overflow;
 }
+
+// int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
+// {
+//   result->bit[0] = result->bit[1] = result->bit[2] = result->bit[3] = 0;
+//   int res = 1;
+//   int sign = 0;
+//   int sign1 = get_sign(&value_1);
+//   int sign2 = get_sign(&value_2);
+//   if (sign1 != sign2)
+//     sign = 1;
+//   set_sign(&value_1, 0);
+//   set_sign(&value_2, 0);
+//   if (!value_2.bit[0] && !value_2.bit[1] && !value_2.bit[2])
+//   {
+//     res = 3;
+//   }
+//   else
+//   {
+//     s21_decimal tmp = {0};
+//     set_scale(&value_1, 0);
+//     set_scale(&value_2, 0);
+
+//     for (int i = get_bit(value_1, 95); i >= 0; i--)
+//     {
+//       if (get_bit(value_1, i))
+//         set_bit(&tmp, 0, 1);
+//       if (s21_is_greater_or_equal(tmp, value_2))
+//       {
+//         s21_sub(tmp, value_2, &tmp);
+//         if (i != 0)
+//           shift_left(&tmp);
+//         if (get_bit(value_1, i - 1))
+//           set_bit(&tmp, 0, 1);
+//         shift_left(result);
+//         set_bit(result, 0, 1);
+//       }
+//       else
+//       {
+//         shift_left(result);
+//         if (i != 0)
+//           shift_left(&tmp);
+//         if ((i - 1) >= 0 && get_bit(value_1, i - 1))
+//           set_bit(&tmp, 0, 1);
+//       }
+//     }
+//     res = 0;
+//   }
+//   set_sign(result, sign);
+//   return res;
+// }
+
+// int s21_div1(s21_decimal value_1, s21_decimal value_2, s21_decimal *result,
+//              s21_decimal *tmp)
+// {
+//   int res = 0;
+//   for (int i = get_bit(value_1, 95); i >= 0; i--)
+//   {
+//     if (get_bit(value_1, i))
+//       set_bit(&tmp, 0, 1);
+//     if (s21_is_greater_or_equal(*tmp, value_2))
+//     {
+//       s21_sub(*tmp, value_2, &tmp);
+//       if (i != 0)
+//         shift_left(&tmp);
+//       if (get_bit(value_1, i - 1))
+//         set_bit(&tmp, 0, 1);
+//       shift_left(result);
+//       set_bit(result, 0, 1);
+//     }
+//     else
+//     {
+//       shift_left(result);
+//       if (i != 0)
+//         shift_left(&tmp);
+//       if ((i - 1) >= 0 && get_bit(value_1, i - 1))
+//         set_bit(&tmp, 0, 1);
+//     }
+//   }
+//   return res;
+// }
 
 int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 {
