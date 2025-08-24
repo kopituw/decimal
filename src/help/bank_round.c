@@ -34,11 +34,15 @@ void bank_round(s21_decimal *dec, unsigned count)
 {
   int system_bit = dec->bit[3];
   int exp = get_scale(dec) - count;
+  s21_decimal ten = {{10, 0, 0, 0}}, one = {{1, 0, 0, 0}}, two = {{2, 0, 0, 0}}, two_res = {0};
   while (count > 0 && count < 96)
   {
     s21_decimal base = {10, 0, 0, 0}, one = {1, 0, 0, 0}, two = {2, 0, 0, 0}, two_res = {0};
     s21_decimal dec_mod = {0};
-    s21_div(*dec, base, &dec_mod);
+    set_scale(dec, 0);
+    s21_remain(*dec, ten, &dec_mod);
+    s21_div(*dec, ten, dec);
+    // printf("! remain = %u\n", dec_mod.bit[0]);
     if (dec_mod.bit[0] > 5)
     {
       denya_add_basic(*dec, one, dec);
@@ -53,12 +57,7 @@ void bank_round(s21_decimal *dec, unsigned count)
   }
   dec->bit[3] = system_bit;
   set_scale(dec, exp);
-  remove_zero(dec);
-}
-
-void big_bank_round(s21_big_decimal *value, unsigned count) {
-    if (count) {
-    }
+  // remove_zeros(dec);
 }
 
 // void remove_zeros(s21_decimal *value)

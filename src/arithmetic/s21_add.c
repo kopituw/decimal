@@ -14,12 +14,12 @@ int s21_round(s21_decimal value, s21_decimal *result)
   // printf("VALUE from round %u\n", value.bit[0]);
 
   int count = get_scale(&value), overflow = OK;
-  s21_decimal fpart_size = {1, 0, 0, 0}, five = {5, 0, 0, 0};
+  s21_decimal fpart_size = {{1, 0, 0, 0}}, five = {{5, 0, 0, 0}};
 
   set_scale(&value, 0);
   while (count-- > 0)
   {
-    s21_mul(fpart_size, (s21_decimal){10, 0, 0, 0}, &fpart_size);
+    s21_mul(fpart_size, (s21_decimal){{10, 0, 0, 0}}, &fpart_size);
   }
   s21_mul(fpart_size, five, &five);
   s21_div(five, (s21_decimal){{10, 0, 0, 0}}, &five);
@@ -88,7 +88,6 @@ int s21_floor(s21_decimal value, s21_decimal *result)
 //     set_scale(&min_dec, min_scale);
 //     set_scale(&max_dec, min_scale);
 // }
-
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 {
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),
