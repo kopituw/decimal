@@ -50,12 +50,7 @@ int s21_div_basic(s21_decimal value_1, s21_decimal value_2, s21_decimal *result,
     {
       *remain = value_2;
 
-<<<<<<<<< Temporary merge branch 1
-      // while (s21_is_less_or_equal(huy, value_1))
-      while (s21_is_less_or_equal(huy, value_1))
-=========
-      while (huy.bit[0] <= value_1.bit[0])
->>>>>>>>> Temporary merge branch 2
+      while (s21_is_less_or_equal(*remain, value_1))
       {
         overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
 
