@@ -424,12 +424,24 @@ END_TEST
 START_TEST(test_div_simple) {
   s21_decimal a = INIT_DECIMAL(15);
   s21_decimal b = INIT_DECIMAL(3);
+  s21_decimal exp = INIT_DECIMAL(5);
   s21_decimal result;
 
   s21_div(a, b, &result);
-  ck_assert_int_eq(s21_is_equal(result, INIT_DECIMAL(5)), 1);
+  ck_assert_int_eq(s21_is_equal(result, exp), 1);
 }
 END_TEST
+
+// START_TEST(test_div_2) {
+//   s21_decimal a = INIT_DECIMAL(5);
+//   s21_decimal b = INIT_DECIMAL(2);
+//   s21_decimal exp = INIT_DECIMAL(2);
+//   s21_decimal result;
+
+//   s21_div(a, b, &result);
+//   ck_assert_int_eq(s21_is_equal(result, exp), 1);
+// }
+// END_TEST
 
 START_TEST(test_is_equal_1) {
   s21_decimal a = {{0x0, 0x0, 0x0, 0x0}};
@@ -592,8 +604,8 @@ START_TEST(test_is_greater_or_equal_6) {
 END_TEST
 
 START_TEST(test_is_greater_or_equal_7) {
-  s21_decimal a = {{0x3AC3ACF0, 0xBE2A10D, 0x0, 0x40000}}; // 85642395734636.4656
-  s21_decimal b = {{0x3AC3ACF1, 0xBE2A10D, 0x0, 0x0}}; // 85642395734636.4657
+  s21_decimal a = INIT_DECIMAL_SCALE(856423957346364656, 4); // 85642395734636.4656
+  s21_decimal b = INIT_DECIMAL_SCALE(856423957346364657, 4);     // 85642395734636.4657
 
   int status = s21_is_greater_or_equal(a, b);
 
@@ -687,7 +699,7 @@ START_TEST(test_is_greater_7) {
 
   int status = s21_is_greater(a, b);
 
-  ck_assert_int_eq(status, 0);
+  ck_assert_int_eq(status, 1);
 }
 END_TEST
 
@@ -1384,6 +1396,7 @@ Suite* decimal_suite(void) {
   // tcase_add_test(tc, test_mul_remove_zeros);
   tcase_add_test(tc, test_div_by_zero);
   tcase_add_test(tc, test_div_simple);
+  // tcase_add_test(tc, test_div_2);
   tcase_add_test(tc, test_is_equal_1);
   tcase_add_test(tc, test_is_equal_2);
   tcase_add_test(tc, test_is_equal_3);

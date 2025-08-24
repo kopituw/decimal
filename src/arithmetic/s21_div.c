@@ -31,6 +31,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
       // while (s21_is_less_or_equal(huy, value_1))
       while (s21_is_less_or_equal(huy, value_1))
       {
+        // printf("! from div. 1:%u 2:%u %u res = %u\n", value_1.bit[0],
+        // value_2.bit[0], huy.bit[0], result->bit[0]);
         overflow = s21_add(*result, (s21_decimal){{1, 0, 0, 0}}, result);
         if (!overflow)
           overflow = s21_mul(value_2, *result, &huy);
@@ -47,6 +49,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 
   return overflow;
 }
+
 
 int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
 {

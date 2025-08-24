@@ -14,12 +14,12 @@ int s21_round(s21_decimal value, s21_decimal *result)
   // printf("VALUE from round %u\n", value.bit[0]);
 
   int count = get_scale(&value), overflow = OK;
-  s21_decimal fpart_size = {1, 0, 0, 0}, five = {5, 0, 0, 0};
+  s21_decimal fpart_size = {{1, 0, 0, 0}}, five = {{5, 0, 0, 0}};
 
   set_scale(&value, 0);
   while (count-- > 0)
   {
-    s21_mul(fpart_size, (s21_decimal){10, 0, 0, 0}, &fpart_size);
+    s21_mul(fpart_size, (s21_decimal){{10, 0, 0, 0}}, &fpart_size);
   }
   s21_mul(fpart_size, five, &five);
   s21_div(five, (s21_decimal){{10, 0, 0, 0}}, &five);
@@ -88,7 +88,6 @@ int s21_floor(s21_decimal value, s21_decimal *result)
 //     set_scale(&min_dec, min_scale);
 //     set_scale(&max_dec, min_scale);
 // }
-
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 {
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),
@@ -102,21 +101,36 @@ int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 
       if (result->bit[0])
         set_sign(result, sign_1);
-        if (overflow) {
-            return sign_1 ? NEGATIVE_INF : INF;
-        }
-    } else {
-        if (s21_is_greater_or_equal_modal(dec_1, dec_2)) {
-            denya_sub_basic(dec_1, dec_2, result);
-            set_sign(result, sign_1);
-        } else {
-            denya_sub_basic(dec_2, dec_1, result);
-            set_sign(result, sign_2);
-        }
     }
-    
+    else
+    {
+      denya_sub_basic(dec_2, dec_1, result);
+      if (result->bit[0])
+        set_sign(result, sign_2);
+    }
+  }
+  else if (overflow == OK)
+  {
+    overflow = denya_add_basic(dec_1, dec_2, result);
+
+    if (result->bit[0])
+      set_sign(result, sign_1);
+    if (overflow == INF && sign_1 && sign_2)
+      overflow = NEGATIVE_INF;
+  }
+
+  if (overflow != OK && scale > 0 && scale <= 28)
+  {
+    bank_round(&dec_1, 1);
+    bank_round(&dec_2, 1);
+    overflow = s21_add(dec_1, dec_2, result);
+  }
+  else
+  {
     set_scale(result, scale);
-    return OK;
+  }
+
+  return overflow;
 }
 
 int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result)

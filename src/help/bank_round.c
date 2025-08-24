@@ -34,7 +34,7 @@ void bank_round(s21_decimal *dec, unsigned count)
 {
   int system_bit = dec->bit[3];
   int exp = get_scale(dec) - count;
-  s21_decimal ten = {10, 0, 0, 0}, one = {1, 0, 0, 0}, two = {2, 0, 0, 0}, two_res = {0};
+  s21_decimal ten = {{10, 0, 0, 0}}, one = {{1, 0, 0, 0}}, two = {{2, 0, 0, 0}}, two_res = {0};
   while (count > 0 && count < 96)
   {
     s21_decimal dec_mod = {0};
