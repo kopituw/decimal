@@ -1486,6 +1486,14 @@ START_TEST(test_from_decimal_to_int_6) {
 }
 END_TEST
 
+START_TEST(test_negate) {
+	    s21_decimal val = {{123, 0, 0, 0}};  
+    s21_decimal expected = {{123, 0, 0, (1 << 31)}}; 
+    s21_decimal result = {0};
+    s21_negate(val, &result);
+    ck_assert_int_eq(s21_is_equal(result, expected), 1);
+}
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -1626,6 +1634,7 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_from_decimal_to_int_4);
   tcase_add_test(tc, test_from_decimal_to_int_5);
   tcase_add_test(tc, test_from_decimal_to_int_6);
+  tcase_add_test(tc, test_negate);
   suite_add_tcase(s, tc);
   return s;
 }
