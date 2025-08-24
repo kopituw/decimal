@@ -1064,6 +1064,56 @@ START_TEST(test_decimal_to_int_1) {
 }
 END_TEST
 
+START_TEST(test_decimal_to_int_2) {
+	s21_decimal src = {{5, 0, 0, 0}};
+	int dst =0;
+	int exp = 5;
+
+	ck_assert_int_eq(s21_from_decimal_to_int(src, &dst), 0);
+	ck_assert_int_eq(dst, exp);
+
+}
+END_TEST
+
+START_TEST(test_decimal_to_int_3) {
+	s21_decimal src = {{0, 0, 0, 0}};
+	int dst = 123;
+	int exp = 0;
+
+	ck_assert_int_eq(s21_from_decimal_to_int(src, &dst), 0);
+	ck_assert_int_eq(dst, exp);
+
+}
+END_TEST
+
+START_TEST(test_decimal_to_int_4) {
+	s21_decimal src = {{9, 0, 0, 0x00030000}};
+	int dst = 1;
+	int exp = 0;
+
+	ck_assert_int_eq(s21_from_decimal_to_int(src, &dst), 0);
+	ck_assert_int_eq(dst, exp);
+
+}
+END_TEST
+
+START_TEST(test_decimal_to_int_5) {
+
+    s21_decimal src = {{1, 0, 0, 0}};
+    ck_assert_int_eq(s21_from_decimal_to_int(src, NULL), 1);
+
+}
+END_TEST
+
+START_TEST(test_decimal_to_int_6) {
+	
+	s21_decimal src = {{2147483648u, 0, 0, 0}}; 
+    int dst = 0;
+    ck_assert_int_eq(s21_from_decimal_to_int(src, &dst), 1);
+
+}
+END_TEST
+
 START_TEST(test_int_to_decimal_1) {
   int value = 2;
   s21_decimal res = {{0, 0, 0 , 0}};
@@ -1520,6 +1570,11 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_decimal_to_float_3);
   tcase_add_test(tc, test_decimal_to_float_4);
   tcase_add_test(tc, test_decimal_to_int_1);
+  tcase_add_test(tc, test_decimal_to_int_2);
+  tcase_add_test(tc, test_decimal_to_int_3);
+  tcase_add_test(tc, test_decimal_to_int_4);
+  tcase_add_test(tc, test_decimal_to_int_5);
+  tcase_add_test(tc, test_decimal_to_int_6);
   tcase_add_test(tc, test_int_to_decimal_1);
   tcase_add_test(tc, test_float_to_decimal_1);
   tcase_add_test(tc, test_float_to_decimal_2);
