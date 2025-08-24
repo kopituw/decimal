@@ -1494,6 +1494,31 @@ START_TEST(test_negate) {
     ck_assert_int_eq(s21_is_equal(result, expected), 1);
 }
 
+START_TEST(test_div10_1) {
+	    s21_decimal val = {{20, 0, 0, 0}}; 
+    s21_decimal quotient = {0};
+    int rem = div10(&val, &quotient);
+    ck_assert_int_eq(quotient.bit[0], 2);
+    ck_assert_int_eq(rem, 0);
+}
+END_TEST
+
+START_TEST(test_bank_round_1) {
+    s21_decimal val = {{15, 0, 0, 0x00000001}};
+    bank_round(&val, 0);
+    ck_assert_int_eq(val.bit[0], 2);
+    ck_assert_int_eq(get_scale(&val), 0);
+}
+END_TEST
+
+START_TEST(test_bank_round_2) {
+    s21_decimal val = {{14, 0, 0, 0x00000001}};
+    bank_round(&val, 0);
+    ck_assert_int_eq(val.bit[0], 1);
+    ck_assert_int_eq(get_scale(&val), 0);
+}
+END_TEST
+
 Suite* decimal_suite(void) {
   Suite* s = suite_create("Decimal");
   TCase* tc = tcase_create("Core");
@@ -1635,6 +1660,9 @@ Suite* decimal_suite(void) {
   tcase_add_test(tc, test_from_decimal_to_int_5);
   tcase_add_test(tc, test_from_decimal_to_int_6);
   tcase_add_test(tc, test_negate);
+  tcase_add_test(tc, test_div10_1);
+  tcase_add_test(tc, test_bank_round_1);
+  tcase_add_test(tc, test_bank_round_2);
   suite_add_tcase(s, tc);
   return s;
 }
