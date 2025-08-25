@@ -3,6 +3,18 @@
 int shift_left(s21_decimal *dec)
 {
   int overflow = get_bit(*dec, 95);
+  // if (!overflow)
+  // {
+  //   int bitTransfer_1 = get_bit(*dec, 31);
+  //   int bitTransfer_2 = get_bit(*dec, 63);
+  //   for (int x = 0; x < 3; x += 1)
+  //     dec->bit[x] <<= 1;
+  //   if (bitTransfer_1)
+  //     set_bit(dec, 32, 1);
+  //   if (bitTransfer_2)
+  //     set_bit(dec, 64, 1);
+  // }
+
   for (int i = 95; i >= 0; i--)
   {
     set_bit(dec, i, i ? get_bit(*dec, i - 1) : 0);
@@ -16,10 +28,31 @@ int shift_left_offset(s21_decimal *dec, int offset)
   while (offset--)
   {
     overflow = shift_left(dec);
+    // printf("over after shift left = %d\n", overflow);
   }
   // printf("ovrflw from shift = %d\n", overflow);
   return overflow;
 }
+
+// int shift_left_offset(s21_decimal *dec, int offset)
+// {
+//   int overflow = get_bit(*dec, 95);
+//   if (!(get_bit(*dec, 95) + offset > 95))
+//   {
+//     for (int y = 0; y < offset; y++)
+//     {
+//       int bitTransfer_1 = get_bit(*dec, 31);
+//       int bitTransfer_2 = get_bit(*dec, 63);
+//       for (int x = 0; x < 3; x++)
+//         dec->bit[x] <<= 1;
+//       if (bitTransfer_1)
+//         set_bit(dec, 32, 1);
+//       if (bitTransfer_2)
+//         set_bit(dec, 64, 1);
+//     }
+//   }
+//   return overflow;
+// }
 
 // void shift_left(s21_big_decimal* decimal, int shift_value) {
 //     int current_len = shift_value_len(*decimal);

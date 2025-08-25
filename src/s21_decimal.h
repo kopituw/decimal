@@ -49,6 +49,8 @@ int test_s21_normalize(int *total_tests_count);
 int test_s21_round(int *total_tests_count);
 int test_s21_floor(int *total_tests_count);
 
+void print_decimal(s21_decimal dec);
+
 // арифметика
 
 int denya_add_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result);
@@ -61,6 +63,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_big_div(s21_big_decimal value_1, s21_big_decimal value_2,
                 s21_big_decimal *result);
+int s21_div_basic(s21_decimal value_1, s21_decimal value_2, s21_decimal *result, s21_decimal *remain);
 
 // сравнение
 int s21_is_less(s21_decimal, s21_decimal);
