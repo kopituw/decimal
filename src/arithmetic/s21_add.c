@@ -1,5 +1,27 @@
 #include "../s21_decimal.h"
 
+// void norm_decimal(s21_decimal dec1, s21_decimal dec2)
+// {
+//     int scale1 = get_scale(&dec1), scale2 = get_scale(&dec2);
+
+//     int min_scale = scale1 > scale2 ? scale2 : scale1, max_scale = scale1 >
+//     scale2 ? scale2 : scale1; s21_decimal min_dec = min_scale == scale1 ?
+//     dec1 : dec2, max_dec = max_scale == scale1 ? dec1 : dec2; s21_decimal ten
+//     = {{0, 0, 0, 10}};
+
+//     while (min_scale != max_scale)
+//     {
+//         if (min_scale < 28 && !s21_mul(min_dec, ten, &min_dec))
+//         {
+//             min_scale++;
+//             set_scale(&min_dec, min_scale);
+//         }
+//     }
+
+//     set_scale(&min_dec, min_scale);
+//     set_scale(&max_dec, min_scale);
+// }
+
 int s21_add(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result)
 {
   int overflow = normalize(&dec_1, &dec_2), sign_1 = get_sign(&dec_1),

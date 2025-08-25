@@ -100,5 +100,6 @@ int s21_remain(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int div10(const s21_decimal *value, s21_decimal *quotient);
 int big_div10(const s21_big_decimal *value, s21_big_decimal *quotient);
 void big_bank_round(s21_big_decimal *value, unsigned count);
+int mul10(s21_decimal *value);
 
 #endif
