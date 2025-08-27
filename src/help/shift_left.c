@@ -14,7 +14,6 @@ int shift_left(s21_decimal *dec)
   //   if (bitTransfer_2)
   //     set_bit(dec, 64, 1);
   // }
-
   for (int i = 95; i >= 0; i--)
   {
     set_bit(dec, i, i ? get_bit(*dec, i - 1) : 0);
@@ -22,12 +21,68 @@ int shift_left(s21_decimal *dec)
   return overflow;
 }
 
+int get_bit_test(int src, int pos)
+{
+  if (src & (1 << pos))
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+void set_bit_test(int *dst, int pos, int value)
+{
+  if (value)
+  {
+    *dst |= (1 << pos);
+  }
+  else
+  {
+    *dst &= ~(1 << pos);
+  }
+}
+
+// int shift_left_bit(s21_decimal *dec, int count)
+// {
+//   int bit_index = (count / 8) - 1;
+//   // count /= 4;
+
+//   int overflow = get_bit(*dec, 95);
+
+//   for (int i = 3; i >= 0; i--)
+//   {
+//     for (int k = 31; k >= 0; k--)
+//     {
+
+//     }
+//     set_bit(dec, i, i ? get_bit(*dec, i - 1) : 0);
+//   }
+//   return overflow;
+// }
+
+void shift_left_bit(s21_decimal *dec)
+{
+  int old = 0;
+  for (int i = 0; i < 3; i++)
+  {
+    int new_bit = get_bit_test(dec->bit[i], 31);
+    dec->bit[i] = dec->bit[i] << 1;
+    set_bit(&(dec->bit[i]), 0, old);
+    old = new_bit;
+  }
+}
+
 int shift_left_offset(s21_decimal *dec, int offset)
 {
   int overflow = 0;
-  while (offset--)
+  // printf("bit = %d\n", get_bit(*dec, 0));
+  while (offset-- && !overflow)
   {
     overflow = shift_left(dec);
+    // shift_left_bit(dec);
     // printf("over after shift left = %d\n", overflow);
   }
   // printf("ovrflw from shift = %d\n", overflow);

@@ -15,10 +15,10 @@ int main(void)
   // test_s21_is_greater_or_equal(&total_tests_count);
   // failed_tests_count += test_s21_add(&total_tests_count);
   // failed_tests_count += test_s21_sub(&total_tests_count);
-  // failed_tests_count += test_s21_mul(&total_tests_count);
+  failed_tests_count += test_s21_mul(&total_tests_count);
   // failed_tests_count += test_s21_div(&total_tests_count);
   // failed_tests_count += test_s21_normalize(&total_tests_count);
-  failed_tests_count += test_s21_bank_round(&total_tests_count);
+  // failed_tests_count += test_s21_bank_round(&total_tests_count);
   // failed_tests_count += test_s21_round(&total_tests_count);
   // failed_tests_count += test_s21_floor(&total_tests_count);
 
@@ -539,8 +539,8 @@ int test_s21_mul(int *total_tests_count)
       {
         (*total_tests_count)++;
         int na = values_a[i], nb = values_b[j];
-        s21_decimal a = {{na > 0 ? na : -na, 0, 0, 0}};
-        s21_decimal b = {{nb > 0 ? nb : -nb, 0, 0, 0}};
+        s21_decimal a = {{0, na > 0 ? na : -na, 0, 0}};
+        s21_decimal b = {{0, nb > 0 ? nb : -nb, 0, 0}};
         s21_decimal result;
         init_decimal(&result);
         set_sign(&a, (na < 0));
@@ -553,8 +553,8 @@ int test_s21_mul(int *total_tests_count)
         char sign2 = get_sign(&b) ? '-' : '+';
         char sign3 = get_sign(&result) ? '-' : '+';
 
-        sprintf(my_res, "%c%u * %c%u = %c%u\n", sign1, a.bit[0], sign2,
-                b.bit[0], sign3, result.bit[0]);
+        sprintf(my_res, "%c%u * %c%u = %c%u\n", sign1, a.bit[1], sign2,
+                b.bit[1], sign3, result.bit[2]);
         sprintf(exp_res, "%+d * %+d = %+d\n", na, nb, na * nb);
 
         if (!strcmp(my_res, exp_res))
@@ -612,25 +612,29 @@ int test_s21_mul(int *total_tests_count)
     printf("TEST #%d PASSED!\n", *total_tests_count);
   }
 
-  max = (s21_decimal){{0xFFFFFFFF, 0, 0, 0}};
-  // set_scale(&max, 28);
-  // set_sign(&max, 1);
-  b = (s21_decimal){{2, 0, 0, 0}};
-  // set_sign(&b, 1);
-  // set_scale(&b, 28);
-  (*total_tests_count)++;
-  result = max;
-  printf("res = %u\n", result.bit[0]);
-  status = s21_mul(max, b, &result);
-  printf("res = %u\n", result.bit[0]);
-  status = s21_mul(result, b, &result);
-  printf("res = %u\n", result.bit[0]);
-  status = s21_mul(result, b, &result);
-  printf("res = %u\n", result.bit[0]);
-  status = s21_mul(result, b, &result);
-  print_decimal(result);
+  // s21_decimal a = (s21_decimal){{0x55555555, 0x55555555, 0x55555555, 0}};
+  // printf("=========== a:\n");
+  // printf("%u-%u-%u:\n", a.bit[0], a.bit[1], a.bit[2]);
+  // print_decimal(a);
+  // b = (s21_decimal){{0x87FFFFFF, 0x1F128130, 0x1027E72F, 0}};
+  // printf("=========== b:\n");
+  // printf("%u-%u-%u:\n", b.bit[0], b.bit[1], b.bit[2]);
+  // print_decimal(b);
+  // s21_decimal exp = {{0xAAAAAAA8, 0xAAAAAAAA, 0x2AAAAAAA, 0}};
+  // printf("=========== exp:\n");
+  // printf("%u-%u-%u:\n", exp.bit[0], exp.bit[1], exp.bit[2]);
+  // print_decimal(exp);
 
-  // if (status != NEGATIVE_INF)
+  // init_decimal(&result);
+  // // set_scale(&b, 28);
+  // (*total_tests_count)++;
+  // status = s21_mul(a, b, &result);
+
+  // printf("=========== result with status %d:\n", status);
+  // printf("%u-%u-%u:\n", result.bit[0], result.bit[1], result.bit[2]);
+  // print_decimal(result);
+
+  // if (!s21_is_equal(result, exp))
   // {
   //   failed_tests_count++;
   //   printf("TEST #%d FAILED!\n", *total_tests_count);
@@ -641,6 +645,70 @@ int test_s21_mul(int *total_tests_count)
   //   printf("TEST #%d PASSED!\n", *total_tests_count);
   // }
 
+  s21_decimal a = (s21_decimal){{1324, 1324, 132224, 0}};
+  printf("=========== a:\n");
+  printf("%u-%u-%u:\n", a.bit[0], a.bit[1], a.bit[2]);
+  print_decimal(a);
+  b = (s21_decimal){{32, 2, 0, 0}};
+  printf("=========== b:\n");
+  printf("%u-%u-%u:\n", b.bit[0], b.bit[1], b.bit[2]);
+  print_decimal(b);
+  s21_decimal exp = {{0xAAAAAAA8, 0xAAAAAAAA, 0x2AAAAAAA, 0}};
+  printf("=========== exp:\n");
+  printf("%u-%u-%u:\n", exp.bit[0], exp.bit[1], exp.bit[2]);
+  print_decimal(exp);
+
+  init_decimal(&result);
+  // set_scale(&b, 28);
+  (*total_tests_count)++;
+  status = s21_mul(a, b, &result);
+
+  printf("=========== result with status %d:\n", status);
+  printf("%u-%u-%u:\n", result.bit[0], result.bit[1], result.bit[2]);
+  print_decimal(result);
+
+  if (!s21_is_equal(result, exp))
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+    printf(" my_res: %d\nexp_res: %d\n", status, NEGATIVE_INF);
+  }
+  else
+  {
+    printf("TEST #%d PASSED!\n", *total_tests_count);
+  }
+  max = (s21_decimal){{1111111111, 0, 0, 0}};
+  // set_scale(&max, 28);
+  // set_sign(&max, 1);
+  s21_decimal ten = (s21_decimal){{10, 0, 0, 0}};
+  b = (s21_decimal){{1111111111, 1111111111, 1111111111, 0}};
+  // set_sign(&b, 1);
+  // set_scale(&b, 28);
+  (*total_tests_count)++;
+  result = max;
+  // printf("res = %u\n", result.bit[0]);
+  status = s21_mul(max, ten, &result);
+  // printf("res = %u\n", result.bit[0]);
+  // status = s21_mul(result, b, &result);
+  // printf("res = %u\n", result.bit[0]);
+  // status = s21_mul(result, b, &result);
+  // printf("res = %u\n", result.bit[0]);
+  // status = s21_mul(result, b, &result);
+  print_decimal(max);
+  print_decimal(result);
+  print_decimal(b);
+
+  if (status != NEGATIVE_INF)
+  {
+    failed_tests_count++;
+    printf("TEST #%d FAILED!\n", *total_tests_count);
+    printf(" my_res: %d\nexp_res: %d\n", status, NEGATIVE_INF);
+  }
+  else
+  {
+    printf("TEST #%d PASSED!\n", *total_tests_count);
+  }
+  // s21_mul_new(a, b, &result);
   return failed_tests_count;
 }
 

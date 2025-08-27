@@ -9,6 +9,7 @@
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
+#define MAX4BITE 32
 
 // коды возвращаемых результатов
 enum returns
@@ -34,8 +35,13 @@ typedef struct s21_decimal
 typedef struct
 {
   uint32_t b_bit[8];
+  int scale;
+  int sign;
 } s21_big_decimal;
 
+int s21_calc_get_overflow(s21_big_decimal *src);
+int s21_from_work_decimal(s21_big_decimal src, s21_decimal *dst);
+int s21_to_work_decimal(s21_decimal src, s21_big_decimal *dst);
 // TESTS
 int test_s21_is_greater(int *total_tests_count);
 int test_s21_bank_round(int *total_tests_count);
@@ -60,6 +66,7 @@ int s21_big_add(s21_big_decimal value_1, s21_big_decimal value_2,
                 s21_big_decimal *result);
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+int s21_mul_new(s21_decimal a, s21_decimal b, s21_decimal *c);
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_big_div(s21_big_decimal value_1, s21_big_decimal value_2,
                 s21_big_decimal *result);

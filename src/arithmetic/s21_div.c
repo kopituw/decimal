@@ -13,15 +13,20 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)
   s21_div_basic(value_1, value_2, result, &remain);
   // printf("after 1st div res = %u with scl %d\n", result->bit[0], get_scale(result));
   // printf("ostatok? of %u \\ %u = %u with %d\n", value_1.bit[0], value_2.bit[0], remain.bit[0], get_scale(&remain));
-  while (!is_zero(remain) && get_scale(&remain) < 28 && get_scale(result) < 28)
+  while (!is_zero(remain) && get_scale(&remain) < 28 && scale < 28)
   {
     // printf("\nafter N div res = %u with scl %d\n", result->bit[0], get_scale(result));
     s21_mul(remain, (s21_decimal){{10, 0, 0, 0}}, &remain);
     s21_mul(*result, (s21_decimal){{10, 0, 0, 0}}, result);
     s21_div_basic(remain, value_2, &temp, &remain);
-    printf("res = %u\n", result->bit[0]);
-    printf("remain = %u\n", remain.bit[0]);
-    // printf("after basic\n");
+    s21_decimal huy = {{1111111111, 1111111111, 0, 0}};
+    // s21_from_float_to_decimal(1.111111111111, &huy);
+    printf("print dec huy!\n");
+    print_decimal(huy);
+    print_decimal(*result);
+    // printf("res = %u\n", result->bit[0]);
+    // printf("remain = %u\n", remain.bit[0]);
+    // // printf("after basic\n");
     denya_add_basic(*result, temp, result);
     set_scale(result, ++scale);
     // printf("scale = %d\n", scale);
