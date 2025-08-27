@@ -34,7 +34,9 @@ GCOV_FLAGS = --coverage
 GCOV_DIR = gcov_report
 GCOV_INFO = $(GCOV_DIR)/coverage.info
 
-all: clean $(LIB_FILE)
+all: s21_decimal.a
+
+s21_decimal.a: clean $(LIB_FILE)
 
 $(LIB_FILE): $(OBJ_FILES)
 	ar rcs $@ $^
