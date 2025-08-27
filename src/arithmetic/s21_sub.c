@@ -1,49 +1,47 @@
 #include "../s21_decimal.h"
 
 int is_max_decimal(s21_decimal dec) {
-    return dec.bit[0] == 0xFFFFFFFF && 
-           dec.bit[1] == 0xFFFFFFFF && 
-           dec.bit[2] == 0xFFFFFFFF;
+  return dec.bit[0] == 0xFFFFFFFF && dec.bit[1] == 0xFFFFFFFF &&
+         dec.bit[2] == 0xFFFFFFFF;
 }
 
 int s21_sub(s21_decimal dec_1, s21_decimal dec_2, s21_decimal *result) {
-    if (!result) return NULL_POINTER_EXCEPTION;
-    
-    int sign1 = get_sign(&dec_1);
-    int sign2 = get_sign(&dec_2);
-    
-    int overflow = normalize(&dec_1, &dec_2);
-    if (overflow != OK) return overflow;
-    
-    int scale = get_scale(&dec_1);
-    init_decimal(result);
-    
-    if (sign1 != sign2) {
-        overflow = denya_add_basic(dec_1, dec_2, result);
-        set_sign(result, sign1);
-        
-        if (overflow) {
-            return sign1 ? NEGATIVE_INF : INF;
-        }
-    } 
-    else {
-        int cmp = s21_is_greater_or_equal_modal(dec_1, dec_2);
-        
-        if (cmp) {
-            overflow = denya_sub_basic(dec_1, dec_2, result);
-            set_sign(result, sign1);
-        } else {
-            overflow = denya_sub_basic(dec_2, dec_1, result);
-            set_sign(result, !sign1);
-            
-            if (is_max_decimal(dec_2)) {
-                return NEGATIVE_INF;
-            }
-        }
+  if (!result) return NULL_POINTER_EXCEPTION;
+
+  int sign1 = get_sign(&dec_1);
+  int sign2 = get_sign(&dec_2);
+
+  int overflow = normalize(&dec_1, &dec_2);
+  if (overflow != OK) return overflow;
+
+  int scale = get_scale(&dec_1);
+  init_decimal(result);
+
+  if (sign1 != sign2) {
+    overflow = denya_add_basic(dec_1, dec_2, result);
+    set_sign(result, sign1);
+
+    if (overflow) {
+      return sign1 ? NEGATIVE_INF : INF;
     }
-    
-    set_scale(result, scale);
-    return overflow;
+  } else {
+    int cmp = s21_is_greater_or_equal_modal(dec_1, dec_2);
+
+    if (cmp) {
+      overflow = denya_sub_basic(dec_1, dec_2, result);
+      set_sign(result, sign1);
+    } else {
+      overflow = denya_sub_basic(dec_2, dec_1, result);
+      set_sign(result, !sign1);
+
+      if (is_max_decimal(dec_2)) {
+        return NEGATIVE_INF;
+      }
+    }
+  }
+
+  set_scale(result, scale);
+  return overflow;
 }
 
 int denya_sub_basic(s21_decimal dec1, s21_decimal dec2, s21_decimal *result) {

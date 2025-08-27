@@ -5,8 +5,8 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define S21_DECIMAL_SIGN_MASK (1U << 31)
 #define SCALE_MASK 0x00FF0000
@@ -22,11 +22,7 @@ enum returns {
   NULL_POINTER_EXCEPTION,
   WRONG_SCALE
 };
-enum converts
-{
-    SUCCESS,
-	CONVERTING_ERROR
-};
+enum converts { SUCCESS, CONVERTING_ERROR };
 
 typedef struct s21_decimal {
   uint32_t bit[4];
@@ -44,6 +40,8 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+int s21_div_basic(s21_decimal value_1, s21_decimal value_2, s21_decimal *result,
+                  s21_decimal *remain);
 
 // сравнение
 int s21_is_less(s21_decimal, s21_decimal);
@@ -52,7 +50,6 @@ int s21_is_greater(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal value_1, s21_decimal value_2);
 int s21_is_not_equal(s21_decimal, s21_decimal);
-
 
 // модальное сравнение
 int s21_is_less_modal(s21_decimal, s21_decimal);
