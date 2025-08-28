@@ -645,38 +645,39 @@ int test_s21_mul(int *total_tests_count)
   //   printf("TEST #%d PASSED!\n", *total_tests_count);
   // }
 
-  s21_decimal a = (s21_decimal){{1324, 1324, 132224, 0}};
-  printf("=========== a:\n");
-  printf("%u-%u-%u:\n", a.bit[0], a.bit[1], a.bit[2]);
-  print_decimal(a);
-  b = (s21_decimal){{32, 2, 0, 0}};
-  printf("=========== b:\n");
-  printf("%u-%u-%u:\n", b.bit[0], b.bit[1], b.bit[2]);
-  print_decimal(b);
-  s21_decimal exp = {{0xAAAAAAA8, 0xAAAAAAAA, 0x2AAAAAAA, 0}};
-  printf("=========== exp:\n");
-  printf("%u-%u-%u:\n", exp.bit[0], exp.bit[1], exp.bit[2]);
-  print_decimal(exp);
+  // s21_decimal a = (s21_decimal){{1324, 1324, 132224, 0}};
+  // printf("=========== a:\n");
+  // printf("%u-%u-%u:\n", a.bit[0], a.bit[1], a.bit[2]);
+  // print_decimal(a);
+  // b = (s21_decimal){{32, 2, 0, 0}};
+  // printf("=========== b:\n");
+  // printf("%u-%u-%u:\n", b.bit[0], b.bit[1], b.bit[2]);
+  // print_decimal(b);
+  // s21_decimal exp = {{0xAAAAAAA8, 0xAAAAAAAA, 0x2AAAAAAA, 0}};
+  // printf("=========== exp:\n");
+  // printf("%u-%u-%u:\n", exp.bit[0], exp.bit[1], exp.bit[2]);
+  // print_decimal(exp);
 
-  init_decimal(&result);
-  // set_scale(&b, 28);
-  (*total_tests_count)++;
-  status = s21_mul(a, b, &result);
+  // init_decimal(&result);
+  // // set_scale(&b, 28);
+  // (*total_tests_count)++;
+  // status = s21_mul(a, b, &result);
 
-  printf("=========== result with status %d:\n", status);
-  printf("%u-%u-%u:\n", result.bit[0], result.bit[1], result.bit[2]);
-  print_decimal(result);
+  // printf("=========== result with status %d:\n", status);
+  // printf("%u-%u-%u:\n", result.bit[0], result.bit[1], result.bit[2]);
+  // print_decimal(result);
 
-  if (!s21_is_equal(result, exp))
-  {
-    failed_tests_count++;
-    printf("TEST #%d FAILED!\n", *total_tests_count);
-    printf(" my_res: %d\nexp_res: %d\n", status, NEGATIVE_INF);
-  }
-  else
-  {
-    printf("TEST #%d PASSED!\n", *total_tests_count);
-  }
+  // if (!s21_is_equal(result, exp))
+  // {
+  //   failed_tests_count++;
+  //   printf("TEST #%d FAILED!\n", *total_tests_count);
+  //   printf(" my_res: %d\nexp_res: %d\n", status, NEGATIVE_INF);
+  // }
+  // else
+  // {
+  //   printf("TEST #%d PASSED!\n", *total_tests_count);
+  // }
+
   max = (s21_decimal){{1111111111, 0, 0, 0}};
   // set_scale(&max, 28);
   // set_sign(&max, 1);

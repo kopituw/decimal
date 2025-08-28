@@ -189,6 +189,45 @@ int s21_mul_new(s21_decimal a, s21_decimal b, s21_decimal *c)
 //   return overflow != 0;
 // }
 
+// int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
+// {
+//   if (!c)
+//     return NULL_POINTER_EXCEPTION;
+
+//   s21_decimal temp;
+//   init_decimal(&temp);
+
+//   int overflow = get_scale(&a) > 28 || get_scale(&b) > 28 ? INF : OK;
+
+//   if (overflow == OK)
+//     overflow = get_scale(&a) < 0 || get_scale(&b) < 0 ? NEGATIVE_INF : OK;
+
+//   int sign1 = get_sign(&a);
+//   int sign2 = get_sign(&b);
+
+//   for (int i = 0; i < 96 && overflow == OK; i++)
+//   {
+//     if (get_bit(a, i))
+//     {
+//       s21_decimal tmp = b;
+//       overflow = shift_left_offset(&tmp, i);
+
+//       if (!overflow)
+//         overflow = denya_add_basic(temp, tmp, &temp);
+//     }
+//   }
+//   if (overflow == OK)
+//     *c = temp;
+
+//   if (!is_zero(*c))
+//     set_sign(c, sign1 ^ sign2);
+
+//   if (overflow)
+//     overflow = (sign1 ^ sign2) ? NEGATIVE_INF : INF;
+
+//   return overflow;
+// }
+
 int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
 {
   if (!c)
@@ -196,16 +235,9 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
 
   s21_decimal temp;
   init_decimal(&temp);
+  int overflow = 0;
 
-  int overflow = get_scale(&a) > 28 || get_scale(&b) > 28 ? INF : OK;
-
-  if (overflow == OK)
-    overflow = get_scale(&a) < 0 || get_scale(&b) < 0 ? NEGATIVE_INF : OK;
-
-  int sign1 = get_sign(&a);
-  int sign2 = get_sign(&b);
-
-  for (int i = 0; i < 96 && overflow == OK; i++)
+  for (int i = 0; i < 96 && !overflow; i++)
   {
     if (get_bit(a, i))
     {
@@ -213,17 +245,22 @@ int s21_mul(s21_decimal a, s21_decimal b, s21_decimal *c)
       overflow = shift_left_offset(&tmp, i);
 
       if (!overflow)
-        overflow = denya_add_basic(temp, tmp, &temp);
+      {
+
+        printf("!--- tmp = %u.%u.%u\n", tmp.bit[0], tmp.bit[1], tmp.bit[2]);
+        printf("!--- temp = %u.%u.%u\n", temp.bit[0], temp.bit[1], temp.bit[2]);
+
+        overflow = denya_add_basic(tmp, temp, &temp);
+      }
     }
   }
-  if (overflow == OK)
+  if (!overflow)
     *c = temp;
 
-  if (!is_zero(*c))
-    set_sign(c, sign1 ^ sign2);
+  // int sign_1 = get_sign(&a), sign_2 = get_sign(&b);
 
-  if (overflow)
-    overflow = (sign1 ^ sign2) ? NEGATIVE_INF : INF;
+  if (c->bit[0])
+    set_sign(c, get_sign(&a) ^ get_sign(&b));
 
   return overflow;
 }
